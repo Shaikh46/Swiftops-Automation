@@ -1,0 +1,46 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-25T17:17:51.507Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 2,
+    "implemented": 1,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "In ServiceDetailPanel, modify the 'Get Started' button click handler so that: (1) it immediately triggers the EagleClickAnimation (the same animation used in HeroSection and Navbar via useCTAClick), (2) prevents any scroll or navigation while the animation is playing, and (3) only after the animation's onComplete callback fires, smoothly scrolls to the #contact section using the existing cinematic scroll utility from scrollHelpers.ts. Do not change button appearance, colors, styles, or layout.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/ServiceDetailPanel.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/ServiceDetailPanel.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "In ServicesSection, if any 'Get Started' buttons are rendered directly within the service cards (outside of ServiceDetailPanel), apply the same click behavior: trigger EagleClickAnimation first, block navigation during playback, then smooth scroll to #contact on completion. Only apply this to 'Get Started' buttons inside the Services section. Leave all other buttons (header, navbar CTA, footer, etc.) untouched.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/components/ServicesSection.tsx"
+        ],
+        "matchedFiles": []
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/components/ServiceDetailPanel.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

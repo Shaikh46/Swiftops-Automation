@@ -1,0 +1,32 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-25T17:17:51.505Z",
+  "summary": "The diff shows modifications to ServiceDetailPanel.tsx to implement REQ-1 (EagleClickAnimation trigger on 'Get Started' click, blocking navigation, then scrolling to #contact). However, REQ-2 (applying the same behavior to 'Get Started' buttons directly in ServicesSection service cards) is not evidenced in the diff — ServicesSection.tsx is mentioned in the file summaries but only described as having 'clickable glassmorphism cards with hover effects... and integration with service detail panel,' with no mention of a 'Get Started' button click handler using EagleClickAnimation or useCTAClick.",
+  "missing_requirements": [
+    {
+      "id": "REQ-2",
+      "requirement": "In ServicesSection, apply EagleClickAnimation-then-scroll behavior to any 'Get Started' buttons rendered directly within service cards (outside of ServiceDetailPanel).",
+      "reason": "The diff does not show any changes to ServicesSection.tsx that add EagleClickAnimation, useCTAClick, or animation-gated scroll behavior to service card buttons. The file summary for ServicesSection.tsx only mentions hover effects and panel integration, with no indication of the required click handler change.",
+      "evidence": [
+        "frontend/src/components/ServicesSection.tsx",
+        "frontend-file-summaries.txt"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "ServiceDetailPanel closes (calls onClose) after the animation completes, in addition to scrolling to #contact.",
+      "reason": "The build request only specifies that after the animation completes the page should scroll to #contact. The diff adds an onClose() call in handleAnimationComplete, which was not requested and could alter the panel's behavior unexpectedly.",
+      "evidence": [
+        "frontend/src/components/ServiceDetailPanel.tsx"
+      ]
+    }
+  ],
+  "confidence": 0.8,
+  "changed_files": [
+    "frontend-file-summaries.txt",
+    "frontend/src/components/ServiceDetailPanel.tsx",
+    "project_state.json"
+  ]
+}

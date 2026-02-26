@@ -1,0 +1,44 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Services 'Get Started' Buttons: Play Animation Then Navigate to Get In Touch",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Modify ServiceDetailPanel 'Get Started' button to trigger EagleClickAnimation, block navigation during playback, then smooth scroll to #contact section on completion",
+      "acceptanceCriteria": [
+        "Clicking 'Get Started' in ServiceDetailPanel triggers the EagleClickAnimation overlay immediately.",
+        "The page does not scroll or navigate while the animation is playing.",
+        "After the animation's onComplete callback fires, the page smoothly scrolls to the #contact section.",
+        "No sudden jump or page reload occurs during the transition.",
+        "The button's visual design (color, shape, text, size) is unchanged.",
+        "No duplicate animation instances are created (no animation duplication).",
+        "The behavior works correctly on desktop, tablet, and mobile viewports.",
+        "No other buttons on the page are affected."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ServiceDetailPanel.tsx",
+          "operation": "modify",
+          "description": "Replace the current onClick handler of the 'Get Started' button with logic that: (1) sets showAnimation to true to trigger EagleClickAnimation, (2) provides an onComplete callback that calls cinematicScrollToSection('#contact') from scrollHelpers.ts after the animation finishes, and (3) maintains the existing button styling and layout. Import useState for animation state management and cinematicScrollToSection from '../utils/scrollHelpers'. Add EagleClickAnimation component with showAnimation state and onComplete handler. Ensure no scroll or navigation occurs while animation plays."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Apply the same animation-then-navigate behavior to any 'Get Started' buttons rendered directly in ServicesSection service cards, leaving all other site buttons unchanged",
+      "acceptanceCriteria": [
+        "All 'Get Started' buttons within the Services section (both in service cards and ServiceDetailPanel) use the animation-then-navigate behavior.",
+        "Header, navbar, hero, and all other non-Services buttons are unaffected.",
+        "No regression in existing navigation or animation systems."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ServicesSection.tsx",
+          "operation": "modify",
+          "description": "Review the current ServicesSection implementation to identify if any 'Get Started' buttons exist in the service cards outside of ServiceDetailPanel. If such buttons exist, modify their onClick handlers to trigger EagleClickAnimation with the same pattern: set animation state, provide onComplete callback that calls cinematicScrollToSection('#contact'). If no 'Get Started' buttons exist directly in service cards (only in ServiceDetailPanel), add a code comment documenting that REQ-2 applies only to ServiceDetailPanel since service cards use click-to-open-panel pattern. Import necessary dependencies (useState, EagleClickAnimation, cinematicScrollToSection) only if modifications are needed."
+        }
+      ]
+    }
+  ]
+}

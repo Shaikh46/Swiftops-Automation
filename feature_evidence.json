@@ -1,0 +1,23 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-in-servicedetailpanel-modify-the-get-started-button-click-handler-so-that-1-it-immediately-triggers-the-eagleclickanimation-the-same-animation-used-in-herosection-and-navbar-via-usectaclick-2-prevents-any-scroll-or-navigation-while-the-animation-is-playing-and-3-only-after-the-animation-s-oncomplete-callback-fires-smoothly-scrolls-to-the-contact-section-using-the-existing-cinematic-scroll-utility-from-scrollhelpers-ts-do-not-change-button-appearance-colors-styles-or-layout",
+      "featureTitle": "In ServiceDetailPanel, modify the 'Get Started' button click handler so that: (1) it immediately triggers the EagleClickAnimation (the same animation used in HeroSection and Navbar via useCTAClick), (2) prevents any scroll or navigation while the animation is playing, and (3) only after the animation's onComplete callback fires, smoothly scrolls to the #contact section using the existing cinematic scroll utility from scrollHelpers.ts. Do not change button appearance, colors, styles, or layout.",
+      "files": [
+        "frontend/src/components/ServiceDetailPanel.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

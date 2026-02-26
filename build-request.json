@@ -1,0 +1,73 @@
+{
+  "kind": "build_request",
+  "title": "Services 'Get Started' Buttons: Play Animation Then Navigate to Get In Touch",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "In ServiceDetailPanel, modify the 'Get Started' button click handler so that: (1) it immediately triggers the EagleClickAnimation (the same animation used in HeroSection and Navbar via useCTAClick), (2) prevents any scroll or navigation while the animation is playing, and (3) only after the animation's onComplete callback fires, smoothly scrolls to the #contact section using the existing cinematic scroll utility from scrollHelpers.ts. Do not change button appearance, colors, styles, or layout.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "Immediately play the existing click / entry animation. Use the SAME animation already available on the website.",
+          "Prevent instant navigation or scrolling. Hold user on current page while animation plays.",
+          "After Animation Completion: Automatically navigate to: Get In Touch section OR contact form anchor smoothly."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking 'Get Started' in ServiceDetailPanel triggers the EagleClickAnimation overlay immediately.",
+        "The page does not scroll or navigate while the animation is playing.",
+        "After the animation's onComplete callback fires, the page smoothly scrolls to the #contact section.",
+        "No sudden jump or page reload occurs during the transition.",
+        "The button's visual design (color, shape, text, size) is unchanged.",
+        "No duplicate animation instances are created (no animation duplication).",
+        "The behavior works correctly on desktop, tablet, and mobile viewports.",
+        "No other buttons on the page are affected."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "In ServicesSection, if any 'Get Started' buttons are rendered directly within the service cards (outside of ServiceDetailPanel), apply the same click behavior: trigger EagleClickAnimation first, block navigation during playback, then smooth scroll to #contact on completion. Only apply this to 'Get Started' buttons inside the Services section. Leave all other buttons (header, navbar CTA, footer, etc.) untouched.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "Apply this behavior ONLY to: All Services section → 'Get Started' buttons",
+          "Do NOT modify any other buttons unless already using the same animation system."
+        ]
+      },
+      "acceptanceCriteria": [
+        "All 'Get Started' buttons within the Services section (both in service cards and ServiceDetailPanel) use the animation-then-navigate behavior.",
+        "Header, navbar, hero, and all other non-Services buttons are unaffected.",
+        "No regression in existing navigation or animation systems."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not change button appearance, colors, or styles.",
+    "Do not modify the EagleClickAnimation component's internal design or timing.",
+    "Do not alter the entry/intro animation (IntroAnimation.tsx).",
+    "Do not affect header, navbar, or any non-Services buttons.",
+    "Do not change page layout or any section structure.",
+    "Do not introduce new animation designs — reuse the existing EagleClickAnimation.",
+    "Do not cause animation duplication or conflicts with existing site animations.",
+    "Do not impact page load performance."
+  ],
+  "nonGoals": [
+    "Redesigning or restyling any buttons.",
+    "Changing the EagleClickAnimation visual design or duration.",
+    "Modifying the Navbar CTA or HeroSection CTA click behavior.",
+    "Adding new animations beyond what already exists.",
+    "Changing the contact/Get In Touch section layout or content.",
+    "Any backend changes."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

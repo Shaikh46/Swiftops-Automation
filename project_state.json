@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Website project with cinematic neon entry environment. Adding animated click interaction for Services section 'Get Started' buttons that plays existing animation before scrolling to Get In Touch section.",
+  "architectural_notes": [
+    "Services 'Get Started' button click: trigger existing animation → pause navigation → after animation completes → smooth scroll to Get In Touch section. No layout, style, or animation design changes.",
+    "Button behavior change applies ONLY to Services section 'Get Started' buttons. All other buttons and navigation remain untouched."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-in-servicedetailpanel-modify-the-get-started-button-click-handler-so-that-1-it-immediately-triggers-the-eagleclickanimation-the-same-animation-used-in-herosection-and-navbar-via-usectaclick-2-prevents-any-scroll-or-navigation-while-the-animation-is-playing-and-3-only-after-the-animation-s-oncomplete-callback-fires-smoothly-scrolls-to-the-contact-section-using-the-existing-cinematic-scroll-utility-from-scrollhelpers-ts-do-not-change-button-appearance-colors-styles-or-layout",
+      "title": "In ServiceDetailPanel, modify the 'Get Started' button click handler so that: (1) it immediately triggers the EagleClickAnimation (the same animation used in HeroSection and Navbar via useCTAClick), (2) prevents any scroll or navigation while the animation is playing, and (3) only after the animation's onComplete callback fires, smoothly scrolls to the #contact section using the existing cinematic scroll utility from scrollHelpers.ts. Do not change button appearance, colors, styles, or layout.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Services 'Get Started' buttons: play existing animation first, then smooth scroll to Get In Touch section after animation completes",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "In ServicesSection, if any 'Get Started' buttons are rendered directly within the service cards (outside of ServiceDetailPanel), apply the same click behavior: trigger EagleClickAnimation first, block navigation during playback, then smooth scroll to #contact on completion. Only apply this to 'Get Started' buttons inside the Services section. Leave all other buttons (header, navbar CTA, footer, etc.) untouched.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Services 'Get Started' Buttons: Play Animation Then Navigate to Get In Touch",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
