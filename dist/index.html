@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Youware App</title>
+    
+    <!-- PERF: Preconnect to Google Fonts for faster LCP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Preload critical assets -->
+    <link rel="preload" href="/videos/loading-animation.mp4" as="video" type="video/mp4" crossorigin>
+    <link rel="preload" href="/images/swiftops-logo.jpeg" as="image">
+    <link rel="preload" href="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" as="fetch" crossorigin="anonymous">
+    
+    <style>
+      /* Initial Loading Screen Styles */
+      #initial-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #020617;
+        overflow: hidden;
+        transition: opacity 0.4s ease-in-out;
+      }
+      #initial-loader video {
+        width: 100%;
+        height: 100%;
+        -o-object-fit: contain;
+           object-fit: contain;
+        max-width: 100%;
+        max-height: 100%;
+      }
+      @media (min-width: 768px) {
+        #initial-loader video {
+          -o-object-fit: cover;
+             object-fit: cover;
+        }
+      }
+      
+      /* Jotform Chatbot Branding Hide */
+      .jf-branding, .jotform-branding, a[href*="jotform.com"] {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+      }
+      
+      #jotform-branding-overlay {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 350px;
+        height: 40px;
+        background-color: #ffffff;
+        z-index: 999999;
+        pointer-events: none;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        display: none;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-C_YQXCrE.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BqduQ8s9.css">
+  </head>
+  <body style="font-family: 'Inter', sans-serif;">
+    <!-- Initial Loading Screen -->
+    <div id="initial-loader">
+      <video id="initial-video" autoplay muted playsinline>
+        <source src="/videos/loading-animation.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <div id="root"></div>
+    <div id="jotform-branding-overlay"></div>
+    
+    <!-- Jotform Chatbot Integration -->
+    <script>
+      // Handle initial video playback rate and removal
+      document.addEventListener("DOMContentLoaded", () => {
+        requestAnimationFrame(() => {
+          const loader = document.getElementById('initial-loader');
+          const video = document.getElementById('initial-video');
+          
+          const removeLoader = () => {
+            if (loader && loader.style.opacity !== '0') {
+              loader.style.opacity = '0';
+              setTimeout(() => {
+                if (loader.parentNode) {
+                  loader.parentNode.removeChild(loader);
+                }
+                // Dispatch event so React knows loading is done
+                window.dispatchEvent(new Event('initial-loading-complete'));
+              }, 400);
+            }
+          };
+
+          if (video) {
+            video.playbackRate = 2.0;
+            video.play().catch(() => {});
+            video.addEventListener('ended', removeLoader);
+            video.addEventListener('error', removeLoader);
+          }
+          
+          // Fallback timer
+          setTimeout(removeLoader, 3000);
+          
+          // Defer non-critical script loading
+          setTimeout(() => {
+            var script = document.createElement('script');
+            script.src = "https://cdn.jotfor.ms/agent/embedjs/019c325ea1fa7d58858edbc5056d52742880/embed.js";
+            script.async = true;
+            script.defer = true;
+            document.body.appendChild(script);
+            
+            var checkInterval = setInterval(function() {
+              var brandingElements = document.querySelectorAll('a[href*="jotform.com"], .jf-branding, .jotform-branding');
+              brandingElements.forEach(function(el) {
+                el.style.display = 'none';
+                el.style.opacity = '0';
+                el.style.visibility = 'hidden';
+              });
+            }, 1000);
+            
+            setTimeout(function() {
+              clearInterval(checkInterval);
+            }, 15000);
+          }, 2000); // Wait 2 seconds after DOM ready to load chatbot
+        });
+      });
+    </script>
+  </body>
+</html>

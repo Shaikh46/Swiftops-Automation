@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwiftOps Logo Animation</title>
+<style>
+  /* Base Styles */
+  .swiftops-widget-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: transparent;
+    padding: 2rem;
+  }
+
+  /* Trigger Button */
+  .swiftops-trigger-btn {
+    background: rgba(0, 229, 255, 0.1);
+    border: 1px solid rgba(0, 229, 255, 0.5);
+    color: #00E5FF;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+    z-index: 10;
+  }
+
+  .swiftops-trigger-btn:hover {
+    background: rgba(0, 229, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+    transform: translateY(-2px);
+  }
+
+  /* Animation Wrapper */
+  .swiftops-animation-wrapper {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    perspective: 1000px;
+  }
+
+  .swiftops-animation-wrapper.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Glow Ring */
+  .swiftops-glow-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 160px;
+    height: 160px;
+    margin-top: -80px;
+    margin-left: -80px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 229, 255, 0.8);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.6), inset 0 0 20px rgba(0, 229, 255, 0.6);
+    opacity: 0;
+    transform-style: preserve-3d;
+  }
+
+  /* Logo Image */
+  .swiftops-logo {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    object-fit: contain;
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+    z-index: 2;
+    opacity: 0;
+    transform-style: preserve-3d;
+  }
+
+  /* Text */
+  .swiftops-text {
+    position: absolute;
+    bottom: -40px;
+    color: #00E5FF;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
+    opacity: 0;
+    white-space: nowrap;
+  }
+
+  /* Animations */
+  @keyframes ringRotate {
+    0% { transform: rotateX(60deg) rotateY(0deg) rotateZ(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: rotateX(60deg) rotateY(360deg) rotateZ(360deg); opacity: 0; }
+  }
+
+  @keyframes logoRotate {
+    0% { transform: rotateY(0deg) scale(0.8); opacity: 0; }
+    10% { opacity: 1; transform: rotateY(0deg) scale(1); }
+    90% { opacity: 1; transform: rotateY(720deg) scale(1); }
+    100% { transform: rotateY(720deg) scale(0.8); opacity: 0; }
+  }
+
+  @keyframes textFade {
+    0% { opacity: 0; transform: translateY(10px); }
+    15% { opacity: 1; transform: translateY(0); }
+    85% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+  }
+
+  @keyframes textPulse {
+    0%, 100% { text-shadow: 0 0 10px rgba(0, 229, 255, 0.8); }
+    50% { text-shadow: 0 0 20px rgba(0, 229, 255, 1), 0 0 30px rgba(0, 229, 255, 0.6); }
+  }
+
+  /* Active Animation Classes */
+  .active .swiftops-glow-ring {
+    animation: ringRotate 4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+
+  .active .swiftops-logo {
+    animation: logoRotate 4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+
+  .active .swiftops-text {
+    animation: textFade 4s ease forwards, textPulse 2s infinite;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .swiftops-logo {
+      width: 64px;
+      height: 64px;
+    }
+    .swiftops-glow-ring {
+      width: 130px;
+      height: 130px;
+      margin-top: -65px;
+      margin-left: -65px;
+    }
+    .swiftops-text {
+      font-size: 14px;
+      bottom: -30px;
+    }
+  }
+</style>
+</head>
+<body style="background-color: #020617; margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+
+<!-- BEGIN SWIFTOPS SNIPPET -->
+<div class="swiftops-widget-container">
+  <button class="swiftops-trigger-btn" onclick="triggerSwiftOpsAnimation()">
+    Initialize Core
+  </button>
+  
+  <div id="swiftops-anim-wrapper" class="swiftops-animation-wrapper">
+    <div class="swiftops-glow-ring"></div>
+    <!-- Replace src with your actual logo URL if hosting externally -->
+    <img src="/images/swiftops-logo.jpeg" class="swiftops-logo" alt="SwiftOps Logo" />
+    <div class="swiftops-text">SwiftOps Automation</div>
+  </div>
+</div>
+
+<script>
+  function triggerSwiftOpsAnimation() {
+    const wrapper = document.getElementById('swiftops-anim-wrapper');
+    const btn = document.querySelector('.swiftops-trigger-btn');
+    
+    // Prevent multiple clicks while animating
+    if (wrapper.classList.contains('active')) return;
+    
+    // Hide button temporarily (optional)
+    btn.style.opacity = '0.5';
+    btn.style.pointerEvents = 'none';
+    
+    // Start animation
+    wrapper.classList.remove('active');
+    // Trigger reflow to restart animation
+    void wrapper.offsetWidth;
+    wrapper.classList.add('active');
+    
+    // Reset after 4 seconds (duration of animation)
+    setTimeout(() => {
+      wrapper.classList.remove('active');
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'auto';
+    }, 4000);
+  }
+</script>
+<!-- END SWIFTOPS SNIPPET -->
+
+</body>
+</html>
