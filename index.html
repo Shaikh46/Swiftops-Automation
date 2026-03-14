@@ -126,9 +126,15 @@
             setTimeout(function() {
               clearInterval(checkInterval);
             }, 15000);
-          }, 2000); // Wait 2 seconds after DOM ready to load chatbot
+          }, 2000); // Wait 3 seconds after DOM ready to load chatbot
         });
       });
+    </script>  <!-- ← FIXED: Added missing closing tag -->
+
+    <!-- Vercel Speed Insights -->
+    <script>
+      window.si = window.si || function() { (window.siq = window.siq || []).push(arguments); }
     </script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
   </body>
 </html>
