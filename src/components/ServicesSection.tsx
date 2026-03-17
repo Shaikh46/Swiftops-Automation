@@ -8,7 +8,7 @@ const AIAgentsAnimation = ({ isHovered = false }: { isHovered?: boolean }) => (
   <div className="relative w-full h-full flex items-center justify-center perspective-1000">
     {/* Particle field */}
     <div className="absolute inset-0 overflow-hidden">
-      {[...Array(20)].map((_, i) => (
+      {[...Array(10)].map((_, i) => (
         <motion.div
           key={i}
           className="absolute w-1 h-1 bg-[#00E5FF]/40 rounded-full"
@@ -378,7 +378,7 @@ export function ServicesSection() {
   }, [selectedService])
 
   return (
-    <section id="services" className="relative w-full py-32 bg-gradient-to-b from-black to-[#020617] overflow-hidden perspective-1000">
+    <section id="services" className="relative w-full py-20 md:py-32 bg-gradient-to-b from-black to-[#020617] overflow-hidden">
       {/* Futuristic AI Grid Background */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,229,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,229,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)] opacity-60"></div>
       
@@ -388,15 +388,15 @@ export function ServicesSection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="mb-24 text-center max-w-3xl mx-auto relative">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-32 bg-[#00E5FF]/10 blur-[60px] rounded-full pointer-events-none"></div>
+        <div className="mb-12 md:mb-24 text-center max-w-3xl mx-auto relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-32 bg-[#00E5FF]/10 blur-[60px] rounded-full pointer-events-none hidden md:block"></div>
           
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-white mb-2 hover:drop-shadow-[0_0_20px_rgba(0,229,255,0.4)] transition-all duration-300"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black tracking-tight text-white mb-2 hover:drop-shadow-[0_0_20px_rgba(0,229,255,0.4)] transition-all duration-300"
           >
             Our Services
           </motion.h2>
@@ -426,7 +426,7 @@ export function ServicesSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8 lg:gap-10"
         >
           {services.map((service, index) => (
             <motion.div
@@ -436,13 +436,11 @@ export function ServicesSection() {
               onMouseLeave={() => setHoveredIndex(null)}
               whileHover={{ 
                 y: -10,
-                rotateX: 4,
-                rotateY: -4,
                 transition: { duration: 0.4, ease: "easeOut" }
               }}
               onClick={() => setSelectedService(service)}
-              className="group relative bg-[rgba(10,18,30,0.65)] backdrop-blur-[28px] border border-white/[0.08] rounded-[26px] p-6 lg:p-8 overflow-hidden transition-all duration-500 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_50px_-10px_rgba(0,229,255,0.15)] hover:border-[#00E5FF]/50 flex flex-col h-full transform-gpu cursor-pointer"
-              style={{ transformStyle: "preserve-3d" }}
+              className="group relative bg-[rgba(10,18,30,0.65)] backdrop-blur-lg border border-white/[0.08] rounded-2xl sm:rounded-[26px] p-5 sm:p-6 lg:p-8 overflow-hidden transition-all duration-500 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_50px_-10px_rgba(0,229,255,0.15)] hover:border-[#00E5FF]/50 flex flex-col h-full transform-gpu cursor-pointer"
+              style={{ transform: 'translateZ(0)' }}
             >
               {/* Light Sweep Animation on Hover */}
               <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/5 to-transparent group-hover:animate-[shimmer_1.5s_infinite] skew-x-12 pointer-events-none z-20"></div>
@@ -451,7 +449,7 @@ export function ServicesSection() {
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#00E5FF]/5 rounded-full blur-[80px] group-hover:bg-[#00E5FF]/15 transition-colors duration-700 pointer-events-none"></div>
 
               {/* Animation Area */}
-              <div className="w-full h-48 sm:h-56 mb-8 rounded-2xl bg-black/40 border border-white/5 relative overflow-hidden flex items-center justify-center group-hover:border-[#00E5FF]/30 transition-colors duration-500 shadow-inner">
+              <div className="w-full h-40 sm:h-48 md:h-56 mb-6 sm:mb-8 rounded-2xl bg-black/40 border border-white/5 relative overflow-hidden flex items-center justify-center group-hover:border-[#00E5FF]/30 transition-colors duration-500 shadow-inner">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,229,255,0.05),transparent_70%)] group-hover:bg-[radial-gradient(ellipse_at_center,rgba(0,229,255,0.1),transparent_70%)] transition-colors duration-500"></div>
                 <service.Animation isHovered={hoveredIndex === index} />
               </div>
@@ -460,7 +458,7 @@ export function ServicesSection() {
               <div className="relative z-10 flex-1 flex flex-col">
                 <div className="flex items-center gap-3 mb-4">
                   <service.icon className="w-6 h-6 text-[#00E5FF] group-hover:drop-shadow-[0_0_10px_rgba(0,229,255,0.8)] transition-all duration-300" strokeWidth={1.5} />
-                  <h3 className="text-2xl lg:text-3xl font-bold text-white tracking-tight group-hover:text-[#00E5FF] transition-colors duration-500">
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight group-hover:text-[#00E5FF] transition-colors duration-500">
                     {service.title}
                   </h3>
                 </div>
@@ -498,7 +496,7 @@ export function ServicesSection() {
             animate={{ opacity: 1, backdropFilter: "blur(30px)" }}
             exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
             transition={{ duration: 0.4 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/60"
             onClick={() => setSelectedService(null)}
           >
             <motion.div
@@ -506,7 +504,7 @@ export function ServicesSection() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-4xl bg-[rgba(10,18,30,0.85)] backdrop-blur-[30px] border border-[#00E5FF]/30 rounded-[28px] overflow-hidden shadow-[0_0_80px_rgba(0,229,255,0.15)] flex flex-col"
+              className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-[rgba(10,18,30,0.85)] backdrop-blur-lg border border-[#00E5FF]/30 rounded-2xl sm:rounded-[28px] overflow-hidden shadow-[0_0_80px_rgba(0,229,255,0.15)] flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Animated Neon Border */}
@@ -521,13 +519,13 @@ export function ServicesSection() {
               </button>
 
               {/* Animation Area */}
-              <div className="w-full h-64 sm:h-96 bg-gradient-to-b from-black/60 to-transparent border-b border-white/5 relative overflow-hidden flex items-center justify-center">
+              <div className="w-full h-48 sm:h-64 md:h-96 bg-gradient-to-b from-black/60 to-transparent border-b border-white/5 relative overflow-hidden flex items-center justify-center">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,229,255,0.15),transparent_70%)]"></div>
                 <selectedService.Animation isHovered={true} />
               </div>
 
               {/* Content Area */}
-              <div className="p-8 sm:p-10">
+              <div className="p-5 sm:p-8 md:p-10">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -537,7 +535,7 @@ export function ServicesSection() {
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#00E5FF]/10 to-[#007BFF]/10 border border-[#00E5FF]/30 flex items-center justify-center shadow-[0_0_20px_rgba(0,229,255,0.2)]">
                       <selectedService.icon className="w-6 h-6 text-[#00E5FF]" />
                     </div>
-                    <h3 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
                       {selectedService.title}
                     </h3>
                   </div>

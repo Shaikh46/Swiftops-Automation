@@ -34,9 +34,11 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
   }, [ripples]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // PERF: Skip magnetic effect on touch devices
+    if (window.matchMedia('(pointer: coarse)').matches) return;
     if (!buttonRef.current) return;
     const { left, top, width, height } = buttonRef.current.getBoundingClientRect();
-    const x = (e.clientX - left - width / 2) * 0.2; // Magnetic pull strength
+    const x = (e.clientX - left - width / 2) * 0.2;
     const y = (e.clientY - top - height / 2) * 0.2;
     setPosition({ x, y });
   };

@@ -1,16 +1,24 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Menu, X, ArrowRight, Bot, Zap, Workflow } from 'lucide-react'
 import { HeroSection } from './components/HeroSection'
-import { AboutSection } from './components/AboutSection'
-import { ServicesSection } from './components/ServicesSection'
-import { FounderSection } from './components/FounderSection'
-import { ContactSection } from './components/ContactSection'
 import { NeonButton } from './components/ui/NeonButton'
-import { GlobalLogoAnimation } from './components/ui/GlobalLogoAnimation'
-import { TestimonialsSection } from './components/TestimonialsSection'
 import SplashCursor from './components/ui/SplashCursor'
 import { GlowTrail } from './components/ui/GlowTrail'
+
+// PERF: Lazy load below-fold sections
+const AboutSection = lazy(() => import('./components/AboutSection').then(m => ({ default: m.AboutSection })))
+const ServicesSection = lazy(() => import('./components/ServicesSection').then(m => ({ default: m.ServicesSection })))
+const TestimonialsSection = lazy(() => import('./components/TestimonialsSection').then(m => ({ default: m.TestimonialsSection })))
+const FounderSection = lazy(() => import('./components/FounderSection').then(m => ({ default: m.FounderSection })))
+const ContactSection = lazy(() => import('./components/ContactSection').then(m => ({ default: m.ContactSection })))
+
+// Minimal loading fallback for lazy sections
+const SectionFallback = () => (
+  <div className="w-full min-h-[40vh] flex items-center justify-center bg-transparent">
+    <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+)
 
 // --- Section 3: Trusted Automation Platform (Counters) ---
 const stats = [
@@ -72,14 +80,9 @@ function Counter({ value, suffix }: { value: number, suffix: string }) {
 
 function StatsSection() {
   return (
-    <section className="relative w-full py-24 bg-[#020617] overflow-hidden">
-      {/* Moving Grid Pattern */}
+    <section className="relative w-full py-20 md:py-24 bg-[#020617] overflow-hidden">
+      {/* Moving Grid Pattern — CSS-only, no framer-motion */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,229,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,229,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_20%,transparent_100%)] opacity-30">
-        <motion.div 
-          animate={{ y: [0, 40] }} 
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-full h-full bg-[linear-gradient(rgba(0,229,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,229,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"
-        />
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -88,9 +91,9 @@ function StatsSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
             Trusted Automation Platform
           </h2>
         </motion.div>
@@ -100,19 +103,20 @@ function StatsSection() {
           whileInView="visible"
           viewport={{ once: true }}
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.2 } } }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8"
         >
           {stats.map((stat, i) => (
             <motion.div
               key={i}
               variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } } }}
-              className="relative bg-[#0a121e]/60 backdrop-blur-xl border border-[#00E5FF]/20 rounded-2xl p-8 text-center overflow-hidden group"
+              className="relative bg-[#0a121e]/60 backdrop-blur-lg border border-[#00E5FF]/20 rounded-2xl p-6 md:p-8 text-center overflow-hidden group"
+              style={{ transform: 'translateZ(0)' }}
             >
               {/* Subtle glow behind numbers */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[#00E5FF]/10 rounded-full blur-[40px] group-hover:bg-[#00E5FF]/20 transition-colors duration-500"></div>
               
               <Counter value={stat.value} suffix={stat.suffix} />
-              <p className="text-slate-400 text-sm font-medium tracking-widest uppercase mt-4 relative z-10">
+              <p className="text-slate-400 text-xs sm:text-sm font-medium tracking-widest uppercase mt-4 relative z-10">
                 {stat.label}
               </p>
             </motion.div>
@@ -144,16 +148,16 @@ const workflowSteps = [
 
 function WorkflowSection() {
   return (
-    <section id="workflow" className="relative w-full py-32 bg-black overflow-hidden">
+    <section id="workflow" className="relative w-full py-24 md:py-32 bg-black overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-20"
+          className="text-center mb-12 md:mb-20"
         >
-          <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
             How SwiftOps Works
           </h2>
         </motion.div>
@@ -181,7 +185,7 @@ function WorkflowSection() {
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
             variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.2 } } }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 relative z-10"
           >
             {workflowSteps.map((step, i) => (
               <motion.div
@@ -190,31 +194,15 @@ function WorkflowSection() {
                   hidden: { opacity: 0, y: 30, scale: 0.98 }, 
                   visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } 
                 }}
-                className="bg-[#0a121e]/80 backdrop-blur-xl border border-[#00E5FF]/30 rounded-2xl p-8 text-center shadow-[0_10px_30px_rgba(0,0,0,0.5)] relative group smooth-transition"
-                style={{ willChange: 'transform, opacity', transform: 'translateZ(0)' }}
+                className="bg-[#0a121e]/80 backdrop-blur-lg border border-[#00E5FF]/30 rounded-2xl p-6 md:p-8 text-center shadow-[0_10px_30px_rgba(0,0,0,0.5)] relative group smooth-transition"
+                style={{ transform: 'translateZ(0)' }}
               >
-                {/* Pulse when appearing */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: [0, 0.3, 0], scale: [0.8, 1.1, 1.2] }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 + (i * 0.2), duration: 0.8 }}
-                  className="absolute inset-0 bg-[#00E5FF]/20 rounded-2xl blur-xl pointer-events-none"
-                />
-
-                <div className="relative mx-auto w-16 h-16 mb-6 flex items-center justify-center">
+                <div className="relative mx-auto w-14 h-14 md:w-16 md:h-16 mb-5 md:mb-6 flex items-center justify-center">
                   <div className="absolute inset-0 bg-[#00E5FF]/10 rounded-xl border border-[#00E5FF]/40 transform rotate-3 group-hover:rotate-6 transition-transform duration-300"></div>
-                  <motion.div
-                    initial={{ rotate: -15 }}
-                    whileInView={{ rotate: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.2 + (i * 0.4) }}
-                  >
-                    <step.icon className="w-8 h-8 text-[#00E5FF] drop-shadow-[0_0_10px_rgba(0,229,255,0.8)]" />
-                  </motion.div>
+                  <step.icon className="w-7 h-7 md:w-8 md:h-8 text-[#00E5FF] drop-shadow-[0_0_10px_rgba(0,229,255,0.8)] relative z-10" />
                 </div>
                 
-                <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
+                <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">{step.title}</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">{step.description}</p>
               </motion.div>
             ))}
@@ -228,12 +216,12 @@ function WorkflowSection() {
 // --- Section 1: Full Screen CTA ---
 function CTASection() {
   return (
-    <section className="relative w-full min-h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#020617] via-[#031A2E] to-[#042C3A]">
-      {/* Animated Particle Field - Reduced on mobile */}
+    <section className="relative w-full min-h-[60vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#020617] via-[#031A2E] to-[#042C3A]">
+      {/* Animated Particle Field - Reduced counts for performance */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Desktop particles */}
+        {/* Desktop particles — reduced from 30 to 15 */}
         <div className="hidden md:block">
-          {[...Array(30)].map((_, i) => (
+          {[...Array(15)].map((_, i) => (
             <motion.div
               key={`desktop-${i}`}
               className="absolute w-1 h-1 bg-[#00E5FF]/40 rounded-full"
@@ -255,9 +243,9 @@ function CTASection() {
             />
           ))}
         </div>
-        {/* Mobile particles (reduced count) */}
+        {/* Mobile particles — reduced from 10 to 5 */}
         <div className="md:hidden">
-          {[...Array(10)].map((_, i) => (
+          {[...Array(5)].map((_, i) => (
             <motion.div
               key={`mobile-${i}`}
               className="absolute w-1 h-1 bg-[#00E5FF]/40 rounded-full"
@@ -280,8 +268,8 @@ function CTASection() {
         </div>
       </div>
 
-      {/* Neural Network Lines (Faint) */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
+      {/* Neural Network Lines (Faint) — Desktop only */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none hidden md:block">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <motion.path 
             d="M0,500 Q300,300 600,600 T1200,400 T1800,500" 
@@ -312,7 +300,7 @@ function CTASection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-5xl md:text-7xl font-black text-white mb-12 tracking-tight drop-shadow-[0_0_20px_rgba(0,229,255,0.2)]"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black text-white mb-8 md:mb-12 tracking-tight drop-shadow-[0_0_20px_rgba(0,229,255,0.2)]"
         >
           Ready to Automate Your Business?
         </motion.h2>
@@ -333,7 +321,7 @@ function CTASection() {
           
           <NeonButton href="#contact">
             Get Started with SwiftOps
-            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
+            <ArrowRight className="w-5 h-5 md:w-6 md:h-6 group-hover:translate-x-1 transition-transform duration-300" />
           </NeonButton>
         </motion.div>
       </div>
@@ -344,30 +332,12 @@ function CTASection() {
 function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Services', href: '#services' },
-    { name: 'Automation', href: '#workflow' },
-    { name: 'About', href: '#about' },
-    { name: 'Contact', href: '#contact' },
-  ]
-
   const [activeSection, setActiveSection] = useState('home')
 
+  // PERF: Single scroll handler
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
-
-      // Determine active section
       const sections = ['home', 'services', 'workflow', 'about', 'contact']
       const current = sections.find(section => {
         const element = document.getElementById(section)
@@ -377,13 +347,29 @@ function Navbar() {
         }
         return false
       })
-      if (current) {
-        setActiveSection(current)
-      }
+      if (current) setActiveSection(current)
     }
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [mobileOpen])
+
+  const navLinks = [
+    { name: 'Home', href: '#home' },
+    { name: 'Services', href: '#services' },
+    { name: 'Automation', href: '#workflow' },
+    { name: 'About', href: '#about' },
+    { name: 'Contact', href: '#contact' },
+  ]
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault()
@@ -406,131 +392,183 @@ function Navbar() {
   }
 
   return (
-    <motion.nav
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-500 ${
-        scrolled
-          ? 'bg-[rgba(5,10,30,0.8)] backdrop-blur-[12px] border-b border-[rgba(0,255,255,0.4)] shadow-[0_0_30px_rgba(0,255,255,0.4)]'
-          : 'bg-[rgba(5,10,30,0.4)] backdrop-blur-[8px] border-b border-[rgba(0,255,255,0.2)] shadow-[0_0_15px_rgba(0,255,255,0.2)]'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between relative">
-        {/* Logo */}
-        <a href="#home" onClick={(e) => scrollToSection(e, '#home')} className="flex items-center gap-3 group z-10">
-          <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(0,255,255,0.6)] group-hover:shadow-[0_0_20px_rgba(0,255,255,0.9)] transition-shadow duration-300 border border-[rgba(0,255,255,0.3)]">
-            <img src="/images/swiftops-logo.jpeg" alt="SwiftOps Logo" className="w-full h-full object-contain" />
-          </div>
-          <div className="flex flex-col">
-            <span
-              className="text-[#00ffff] font-bold tracking-[0.15em] text-base uppercase leading-tight drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]"
-              style={{ fontSize: "20px" }}>SwiftOps</span>
-            <span
-              className="text-white/90 font-medium tracking-[0.2em] text-[10px] uppercase leading-tight"
-              style={{ fontSize: "12px" }}>Automation</span>
-          </div>
-        </a>
+    <>
+      <motion.nav
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-500 ${
+          scrolled
+            ? 'bg-[rgba(5,10,30,0.85)] backdrop-blur-xl border-b border-[rgba(0,255,255,0.4)] shadow-[0_0_30px_rgba(0,255,255,0.15)]'
+            : 'bg-[rgba(5,10,30,0.4)] backdrop-blur-md border-b border-[rgba(0,255,255,0.15)] shadow-[0_0_10px_rgba(0,255,255,0.05)]'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 lg:h-20 flex items-center justify-between relative">
+          {/* Logo — fluid sizing from 320px up */}
+          <a href="#home" onClick={(e) => scrollToSection(e, '#home')} className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 group z-10 shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg sm:rounded-xl overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(0,255,255,0.6)] group-hover:shadow-[0_0_20px_rgba(0,255,255,0.9)] transition-shadow duration-300 border border-[rgba(0,255,255,0.3)]">
+              <img src="/images/swiftops-logo.jpeg" alt="SwiftOps Logo" className="w-full h-full object-contain" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[#00ffff] font-bold tracking-[0.08em] sm:tracking-[0.1em] lg:tracking-[0.15em] text-[13px] sm:text-sm lg:text-base uppercase leading-tight drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">
+                SwiftOps
+              </span>
+              <span className="text-white/80 font-medium tracking-[0.12em] sm:tracking-[0.15em] lg:tracking-[0.2em] text-[8px] sm:text-[9px] lg:text-[11px] uppercase leading-tight">
+                Automation
+              </span>
+            </div>
+          </a>
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-          {navLinks.map((link, i) => (
+          {/* Desktop nav — centered links (hidden below lg) */}
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8 absolute left-1/2 -translate-x-1/2">
+            {navLinks.map((link, i) => (
+              <motion.a
+                key={link.name}
+                href={link.href}
+                onClick={(e) => scrollToSection(e, link.href)}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 + (i * 0.08) }}
+                className={`relative transition-all duration-300 text-[12px] xl:text-[13px] font-semibold tracking-[0.1em] uppercase group py-2 whitespace-nowrap ${
+                  activeSection === link.href.replace('#', '') 
+                    ? 'text-[#00ffff] drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]' 
+                    : 'text-white/60 hover:text-[#00ffff] hover:drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]'
+                }`}
+              >
+                {link.name}
+                <span className={`absolute bottom-0 left-0 h-[2px] bg-[#00ffff] transition-all duration-300 shadow-[0_0_10px_rgba(0,255,255,0.9)] ${
+                  activeSection === link.href.replace('#', '') ? 'w-full' : 'w-0 group-hover:w-full'
+                }`}></span>
+              </motion.a>
+            ))}
+          </div>
+
+          {/* Desktop CTA (hidden below lg) */}
+          <div className="hidden lg:block z-10">
             <motion.a
-              key={link.name}
-              href={link.href}
-              onClick={(e) => scrollToSection(e, link.href)}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 + (i * 0.1) }}
-              className={`relative transition-all duration-300 text-[13px] font-semibold tracking-[0.1em] uppercase group py-2 ${
-                activeSection === link.href.replace('#', '') 
-                  ? 'text-[#00ffff] drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]' 
-                  : 'text-white/70 hover:text-[#00ffff] hover:drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]'
-              }`}
+              href="#contact"
+              onClick={(e) => scrollToSection(e, '#contact')}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative inline-flex items-center justify-center px-5 xl:px-6 py-2 xl:py-2.5 text-xs xl:text-sm font-bold text-white uppercase tracking-wider overflow-hidden rounded-full group bg-gradient-to-r from-[rgba(0,255,255,0.1)] to-[rgba(0,150,255,0.1)] border border-[rgba(0,255,255,0.5)] shadow-[0_0_15px_rgba(0,255,255,0.3)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:border-[#00ffff] transition-all duration-300"
             >
-              {link.name}
-              {/* Animated Underline */}
-              <span className={`absolute bottom-0 left-0 h-[2px] bg-[#00ffff] transition-all duration-300 shadow-[0_0_10px_rgba(0,255,255,0.9)] ${
-                activeSection === link.href.replace('#', '') ? 'w-full' : 'w-0 group-hover:w-full'
-              }`}></span>
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#00ffff] to-[#0088ff] opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
+              <span className="relative z-10 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)] group-hover:drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">Get Started</span>
             </motion.a>
-          ))}
-        </div>
+          </div>
 
-        {/* Desktop CTA */}
-        <div className="hidden md:block z-10">
-          <motion.a
-            href="#contact"
-            onClick={(e) => scrollToSection(e, '#contact')}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="relative inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold text-white uppercase tracking-wider overflow-hidden rounded-full group bg-gradient-to-r from-[rgba(0,255,255,0.1)] to-[rgba(0,150,255,0.1)] border border-[rgba(0,255,255,0.5)] shadow-[0_0_15px_rgba(0,255,255,0.3)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:border-[#00ffff] transition-all duration-300"
+          {/* Hamburger — visible below lg */}
+          <button
+            className="lg:hidden relative w-11 h-11 flex items-center justify-center rounded-xl border border-[rgba(0,255,255,0.3)] bg-[rgba(0,255,255,0.05)] text-[#00ffff] active:bg-[rgba(0,255,255,0.15)] active:scale-95 transition-all duration-200 z-[10000] touch-manipulation"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileOpen}
           >
-            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#00ffff] to-[#0088ff] opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
-            <span className="relative z-10 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)] group-hover:drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">Get Started</span>
-          </motion.a>
+            <AnimatePresence mode="wait">
+              {mobileOpen ? (
+                <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                </motion.div>
+              ) : (
+                <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </button>
         </div>
+      </motion.nav>
 
-        {/* Mobile hamburger */}
-        <button
-          className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg border border-[rgba(0,255,255,0.3)] bg-[rgba(0,255,255,0.05)] text-[#00ffff] hover:bg-[rgba(0,255,255,0.1)] hover:shadow-[0_0_15px_rgba(0,255,255,0.4)] transition-all duration-300 z-[10000]"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          {mobileOpen ? <X className="w-6 h-6 drop-shadow-[0_0_5px_rgba(0,255,255,0.8)]" /> : <Menu className="w-6 h-6 drop-shadow-[0_0_5px_rgba(0,255,255,0.8)]" />}
-        </button>
-      </div>
-
-      {/* Mobile menu */}
+      {/* Full-screen Mobile Menu Overlay — below lg */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="absolute top-full left-0 w-full bg-[rgba(5,10,30,0.95)] backdrop-blur-[15px] border-b border-[rgba(0,255,255,0.3)] shadow-[0_20px_40px_rgba(0,0,0,0.8),0_0_20px_rgba(0,255,255,0.2)] md:hidden flex flex-col overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[9998] lg:hidden"
           >
-            <div className="flex flex-col p-6 gap-2">
-              {navLinks.map((link, i) => (
-                <motion.a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(e) => scrollToSection(e, link.href)}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 + (i * 0.05) }}
-                  className={`px-4 py-3 rounded-lg transition-all duration-300 text-sm font-bold tracking-[0.15em] uppercase ${
-                    activeSection === link.href.replace('#', '') 
-                      ? 'bg-[rgba(0,255,255,0.1)] text-[#00ffff] border-l-2 border-[#00ffff] shadow-[inset_10px_0_20px_-10px_rgba(0,255,255,0.3)]' 
-                      : 'text-white/70 hover:bg-[rgba(0,255,255,0.05)] hover:text-[#00ffff] border-l-2 border-transparent hover:border-[rgba(0,255,255,0.5)]'
-                  }`}
-                >
-                  {link.name}
-                </motion.a>
-              ))}
-              
+            {/* Backdrop */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-[rgba(2,6,23,0.97)] backdrop-blur-xl"
+              onClick={() => setMobileOpen(false)}
+            />
+
+            {/* Menu Content */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="relative z-10 flex flex-col justify-center items-center h-full px-6 sm:px-10 safe-bottom"
+            >
+              {/* Nav Links — staggered entry */}
+              <nav className="flex flex-col items-center gap-2 sm:gap-3 w-full max-w-sm">
+                {navLinks.map((link, i) => (
+                  <motion.a
+                    key={link.name}
+                    href={link.href}
+                    onClick={(e) => scrollToSection(e, link.href)}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ delay: 0.1 + (i * 0.06), duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    className={`w-full text-center py-4 sm:py-5 rounded-2xl text-base sm:text-lg font-bold tracking-[0.15em] uppercase transition-all duration-300 min-h-[56px] flex items-center justify-center touch-manipulation ${
+                      activeSection === link.href.replace('#', '') 
+                        ? 'bg-[rgba(0,255,255,0.12)] text-[#00ffff] border border-[rgba(0,255,255,0.3)] shadow-[0_0_25px_rgba(0,255,255,0.15)]' 
+                        : 'text-white/60 hover:text-white active:bg-[rgba(0,255,255,0.08)] active:text-[#00ffff] border border-transparent'
+                    }`}
+                  >
+                    {link.name}
+                    {activeSection === link.href.replace('#', '') && (
+                      <motion.div
+                        layoutId="activeNavDot"
+                        className="w-1.5 h-1.5 bg-[#00ffff] rounded-full ml-3 shadow-[0_0_10px_rgba(0,255,255,0.8)]"
+                      />
+                    )}
+                  </motion.a>
+                ))}
+              </nav>
+
+              {/* CTA Button */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mt-6 px-4"
+                exit={{ opacity: 0 }}
+                transition={{ delay: 0.5, duration: 0.4 }}
+                className="mt-8 sm:mt-10 w-full max-w-sm"
               >
                 <a
                   href="#contact"
                   onClick={(e) => scrollToSection(e, '#contact')}
-                  className="flex items-center justify-center w-full py-3.5 text-sm font-bold text-white uppercase tracking-wider rounded-lg bg-gradient-to-r from-[rgba(0,255,255,0.2)] to-[rgba(0,150,255,0.2)] border border-[rgba(0,255,255,0.5)] shadow-[0_0_15px_rgba(0,255,255,0.3)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:border-[#00ffff] transition-all duration-300"
+                  className="flex items-center justify-center w-full py-4 sm:py-5 text-sm sm:text-base font-bold text-white uppercase tracking-[0.15em] rounded-2xl bg-gradient-to-r from-[rgba(0,255,255,0.15)] to-[rgba(0,100,255,0.15)] border border-[rgba(0,255,255,0.5)] shadow-[0_0_20px_rgba(0,255,255,0.2)] active:shadow-[0_0_30px_rgba(0,255,255,0.5)] active:scale-[0.98] transition-all duration-300 min-h-[56px] touch-manipulation"
                 >
                   <span className="drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">Get Started</span>
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
                 </a>
               </motion.div>
-            </div>
+
+              {/* Bottom branding */}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="mt-10 sm:mt-14 text-white/20 text-[10px] sm:text-xs tracking-[0.2em] uppercase"
+              >
+                SwiftOps Automation
+              </motion.p>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </>
   );
 }
 
@@ -570,19 +608,36 @@ function App() {
         <Navbar />
 
         <HeroSection />
-        <AboutSection />
+        
+        <Suspense fallback={<SectionFallback />}>
+          <AboutSection />
+        </Suspense>
+        
         <StatsSection />
         <WorkflowSection />
-        <ServicesSection />
-        <TestimonialsSection />
-        <FounderSection />
+        
+        <Suspense fallback={<SectionFallback />}>
+          <ServicesSection />
+        </Suspense>
+        
+        <Suspense fallback={<SectionFallback />}>
+          <TestimonialsSection />
+        </Suspense>
+        
+        <Suspense fallback={<SectionFallback />}>
+          <FounderSection />
+        </Suspense>
+        
         <CTASection />
-        <ContactSection />
+        
+        <Suspense fallback={<SectionFallback />}>
+          <ContactSection />
+        </Suspense>
 
       {/* Footer */}
-      <footer className="bg-black border-t border-white/5 py-10">
+      <footer className="bg-black border-t border-white/5 py-8 md:py-10 safe-bottom">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-5">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-5">
             {/* Brand */}
             <a href="#home" onClick={(e) => { e.preventDefault(); document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' }); }} className="flex items-center gap-3 group">
               <div className="w-8 h-8 rounded-lg overflow-hidden shadow-[0_0_8px_rgba(0,229,255,0.5)] group-hover:shadow-[0_0_15px_rgba(0,229,255,0.8)] transition-shadow duration-300">
@@ -592,10 +647,10 @@ function App() {
             </a>
 
             {/* Links */}
-            <div className="flex items-center gap-6 text-neutral-600 text-xs">
-              <a href="#services" onClick={(e) => { e.preventDefault(); document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-neutral-400 transition-colors">Services</a>
-              <a href="#contact" onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-neutral-400 transition-colors">Contact</a>
-              <a href="https://automateze.com" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-400 transition-colors">automateze.com</a>
+            <div className="flex items-center gap-4 md:gap-6 text-neutral-600 text-xs">
+              <a href="#services" onClick={(e) => { e.preventDefault(); document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center">Services</a>
+              <a href="#contact" onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center">Contact</a>
+              <a href="https://automateze.com" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center">automateze.com</a>
             </div>
 
             {/* Status */}
@@ -605,18 +660,17 @@ function App() {
             </div>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-white/3 text-center">
+          <div className="mt-6 pt-6 border-t border-white/5 text-center">
             <p className="text-neutral-700 text-xs">
               © {new Date().getFullYear()} SwiftOps Automation · Built by Shaikh Zeeshan
             </p>
           </div>
         </div>
       </footer>
-      <GlobalLogoAnimation />
     </motion.div>
     <SplashCursor
       SIM_RESOLUTION={128}
-      DYE_RESOLUTION={1440}
+      DYE_RESOLUTION={1024}
       DENSITY_DISSIPATION={3.5}
       VELOCITY_DISSIPATION={2}
       PRESSURE={0.1}

@@ -10,9 +10,10 @@ const features = [
   '24/7 Smart Support'
 ]
 
-// Floating AI Core Animation Component
+// Floating AI Core Animation Component — optimized particle counts
 const FloatingAICore = () => {
   const [mounted, setMounted] = useState(false);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   
   useEffect(() => {
     setMounted(true);
@@ -20,8 +21,9 @@ const FloatingAICore = () => {
 
   if (!mounted) return null;
 
-  // Generate particles - reduced count for performance
-  const particles = Array.from({ length: 8 }).map((_, i) => ({
+  // Reduced particles on mobile for performance
+  const particleCount = isMobile ? 4 : 8;
+  const particles = Array.from({ length: particleCount }).map((_, i) => ({
     id: i,
     size: Math.random() * 3 + 1,
     angle: Math.random() * Math.PI * 2,
@@ -30,24 +32,36 @@ const FloatingAICore = () => {
     delay: Math.random() * 2
   }));
 
+  // Reduced rings on mobile
+  const rings = isMobile 
+    ? [
+        { size: 200, duration: 20, rotateX: 65, rotateY: 20, delay: 0 },
+        { size: 140, duration: 12, rotateX: 75, rotateY: 60, delay: 1 }
+      ]
+    : [
+        { size: 220, duration: 20, rotateX: 65, rotateY: 20, delay: 0 },
+        { size: 180, duration: 15, rotateX: 45, rotateY: -30, delay: 0.5 },
+        { size: 140, duration: 12, rotateX: 75, rotateY: 60, delay: 1 }
+      ];
+
   return (
     <div className="relative w-full h-full flex items-center justify-center">
       {/* Subtle Radial Glow Background */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.1)_0%,transparent_60%)]"></div>
 
       {/* Animation Container */}
-      <div className="relative w-[340px] h-[340px] sm:w-[380px] sm:h-[380px] flex items-center justify-center perspective-1000">
+      <div className="relative w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] flex items-center justify-center">
         
         {/* Vertical Energy Beam */}
         <motion.div 
-          className="absolute w-16 h-full bg-gradient-to-b from-transparent via-[#00E5FF]/10 to-transparent blur-md z-0"
+          className="absolute w-12 sm:w-16 h-full bg-gradient-to-b from-transparent via-[#00E5FF]/10 to-transparent blur-md z-0"
           animate={{ opacity: [0.3, 0.6, 0.3] }}
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         />
 
         {/* Bottom Platform */}
         <motion.div 
-          className="absolute bottom-10 w-48 h-12 rounded-[100%] border border-[#00E5FF]/30 bg-[#00E5FF]/5 shadow-[0_0_10px_rgba(0,229,255,0.1)_inset] z-0"
+          className="absolute bottom-8 sm:bottom-10 w-40 sm:w-48 h-10 sm:h-12 rounded-[100%] border border-[#00E5FF]/30 bg-[#00E5FF]/5 shadow-[0_0_10px_rgba(0,229,255,0.1)_inset] z-0"
           style={{ transform: 'rotateX(70deg)' }}
           animate={{ 
             boxShadow: [
@@ -69,11 +83,7 @@ const FloatingAICore = () => {
           style={{ transformStyle: 'preserve-3d' }}
         >
           {/* Rotating Energy Rings */}
-          {[
-            { size: 220, duration: 20, rotateX: 65, rotateY: 20, delay: 0 },
-            { size: 180, duration: 15, rotateX: 45, rotateY: -30, delay: 0.5 },
-            { size: 140, duration: 12, rotateX: 75, rotateY: 60, delay: 1 }
-          ].map((ring, i) => (
+          {rings.map((ring, i) => (
             <motion.div
               key={`ring-${i}`}
               className="absolute rounded-full border border-[#00E5FF]/40"
@@ -109,7 +119,7 @@ const FloatingAICore = () => {
 
           {/* Central AI Core Sphere */}
           <motion.div
-            className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center"
+            className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center"
             animate={{ 
               rotateY: 360,
               rotateX: 360
@@ -133,7 +143,6 @@ const FloatingAICore = () => {
 
             {/* Core Wireframe/Neural Lines */}
             <div className="absolute inset-0 rounded-full border-2 border-[#00E5FF]/60 shadow-[0_0_30px_rgba(0,229,255,0.6)_inset]">
-              {/* Latitude/Longitude Lines */}
               <div className="absolute inset-0 rounded-full border border-[#00E5FF]/40" style={{ transform: 'rotateX(45deg)' }}></div>
               <div className="absolute inset-0 rounded-full border border-[#00E5FF]/40" style={{ transform: 'rotateX(-45deg)' }}></div>
               <div className="absolute inset-0 rounded-full border border-[#00E5FF]/40" style={{ transform: 'rotateY(45deg)' }}></div>
@@ -142,7 +151,7 @@ const FloatingAICore = () => {
 
             {/* Inner Bright Core */}
             <motion.div 
-              className="absolute w-12 h-12 bg-white rounded-full blur-[8px]"
+              className="absolute w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full blur-[8px]"
               animate={{ 
                 scale: [1, 1.3, 1],
                 opacity: [0.8, 1, 0.8]
@@ -190,16 +199,16 @@ const FloatingAICore = () => {
 
 export function AboutSection() {
   return (
-    <section id="about" className="relative w-full py-32 bg-[#020617] overflow-hidden">
-      {/* Ambient Background Glows */}
-      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-[#00E5FF]/5 rounded-full blur-[120px] -translate-y-1/2 pointer-events-none"></div>
-      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#007BFF]/5 rounded-full blur-[150px] pointer-events-none"></div>
+    <section id="about" className="relative w-full py-20 md:py-32 bg-[#020617] overflow-hidden">
+      {/* Ambient Background Glows — reduced on mobile */}
+      <div className="absolute top-1/2 left-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-[#00E5FF]/5 rounded-full blur-[80px] md:blur-[120px] -translate-y-1/2 pointer-events-none"></div>
+      <div className="absolute bottom-0 right-0 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-[#007BFF]/5 rounded-full blur-[100px] md:blur-[150px] pointer-events-none hidden md:block"></div>
 
       {/* Subtle Grid Background */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,229,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(0,229,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_20%,transparent_100%)] opacity-50"></div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 lg:gap-24 items-center">
           
           {/* Left Side: Illustration / Visual */}
           <motion.div
@@ -207,7 +216,7 @@ export function AboutSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative w-full aspect-square max-w-md mx-auto lg:max-w-none flex items-center justify-center"
+            className="relative w-full aspect-square max-w-[280px] sm:max-w-md mx-auto lg:max-w-none flex items-center justify-center"
           >
             <FloatingAICore />
           </motion.div>
@@ -220,17 +229,17 @@ export function AboutSection() {
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
             className="flex flex-col"
           >
-            <div className="inline-flex items-center gap-2 mb-6 self-start">
+            <div className="inline-flex items-center gap-2 mb-4 sm:mb-6 self-start">
               <div className="px-3 py-1 rounded-full border border-[#00E5FF]/30 bg-[#00E5FF]/10 backdrop-blur-sm">
                 <span className="text-[#00E5FF] text-xs font-bold tracking-widest uppercase">About Us</span>
               </div>
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4 sm:mb-6 leading-tight">
               Transforming Businesses with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00E5FF] to-[#007BFF] drop-shadow-[0_0_15px_rgba(0,229,255,0.3)]">AI Automation</span> & Smart Digital Solutions
             </h2>
 
-            <div className="space-y-6 text-slate-400 text-lg leading-relaxed mb-10">
+            <div className="space-y-4 sm:space-y-6 text-slate-400 text-base sm:text-lg leading-relaxed mb-8 sm:mb-10">
               <p>
                 SwiftOps Automation helps businesses streamline operations using advanced AI agents, intelligent automation systems, and custom digital workflows. Our mission is to simplify complex business processes, increase productivity, and help companies scale faster through modern automation technology.
               </p>
@@ -240,7 +249,7 @@ export function AboutSection() {
             </div>
 
             {/* Feature Highlights */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-8 sm:mb-10">
               {features.map((feature, idx) => (
                 <motion.div 
                   key={idx}
@@ -248,7 +257,7 @@ export function AboutSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.4 + (idx * 0.1) }}
-                  className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 hover:border-[#00E5FF]/30 transition-colors duration-300"
+                  className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 hover:border-[#00E5FF]/30 transition-colors duration-300 min-h-[48px]"
                 >
                   <CheckCircle2 className="w-5 h-5 text-[#00E5FF] flex-shrink-0" />
                   <span className="text-white text-sm font-medium">{feature}</span>
@@ -257,7 +266,7 @@ export function AboutSection() {
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <NeonButton href="#contact">
                 Get Free Consultation
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />

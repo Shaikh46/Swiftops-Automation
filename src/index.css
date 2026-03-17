@@ -20,19 +20,7 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-/* Global Transition Smoothness */
-* {
-  transition-property: transform, opacity, filter, background-color, border-color, color, box-shadow;
-  transition-timing-function: var(--ease-premium);
-  transition-duration: 0.45s;
-}
-
-/* Exclude transitions on elements that shouldn't animate globally to avoid weird effects */
-*, *::before, *::after {
-  transition-property: none;
-}
-
-/* Re-enable specific transitions where needed, or use Tailwind classes */
+/* PERF: Only apply transitions where explicitly needed — no global wildcard */
 .smooth-transition {
   transition: transform 0.45s var(--ease-premium),
               opacity 0.45s var(--ease-premium),
@@ -44,12 +32,19 @@ body {
   will-change: transform, opacity;
   transform: translateZ(0);
   backface-visibility: hidden;
-  perspective: 1000px;
 }
 
+/* MOBILE: Reduce heavy effects */
 @media (max-width: 768px) {
   .animation-heavy {
     transform: scale(0.9) translateZ(0);
+  }
+  /* Reduce blur intensity on mobile for GPU savings */
+  .backdrop-blur-xl {
+    --tw-backdrop-blur: blur(8px) !important;
+  }
+  .backdrop-blur-md {
+    --tw-backdrop-blur: blur(6px) !important;
   }
 }
 
@@ -214,4 +209,18 @@ body {
   mix-blend-mode: screen;
   will-change: transform, opacity;
   transition: opacity 0.3s ease;
+}
+
+/* MOBILE: Hide glow trail on touch devices */
+@media (pointer: coarse) {
+  .glow-trail {
+    display: none !important;
+  }
+}
+
+/* Safe area padding for notched devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }

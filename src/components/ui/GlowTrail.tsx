@@ -10,18 +10,23 @@ export function GlowTrail() {
   const rafId = useRef<number>();
 
   useEffect(() => {
+    // PERF: Disable on touch devices entirely
+    if (window.matchMedia('(pointer: coarse)').matches) {
+      return;
+    }
+
     // PERF: Disable on slow networks or if prefers-reduced-motion
     const connection = (navigator as any).connection;
     if (
       (connection && (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g')) ||
-      window.matchMatchMedia?.('(prefers-reduced-motion: reduce)').matches
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ) {
       return;
     }
 
-    const handleMove = (e: MouseEvent | TouchEvent) => {
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    const handleMove = (e: MouseEvent) => {
+      const clientX = e.clientX;
+      const clientY = e.clientY;
       
       pos.current = { x: clientX, y: clientY };
       
@@ -39,9 +44,7 @@ export function GlowTrail() {
     };
 
     window.addEventListener('mousemove', handleMove, { passive: true });
-    window.addEventListener('touchmove', handleMove, { passive: true });
     window.addEventListener('mouseleave', handleLeave);
-    window.addEventListener('touchend', handleLeave);
 
     const update = () => {
       const now = Date.now();
@@ -80,9 +83,7 @@ export function GlowTrail() {
 
     return () => {
       window.removeEventListener('mousemove', handleMove);
-      window.removeEventListener('touchmove', handleMove);
       window.removeEventListener('mouseleave', handleLeave);
-      window.removeEventListener('touchend', handleLeave);
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
   }, []);

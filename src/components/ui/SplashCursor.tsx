@@ -19,7 +19,7 @@ interface SplashCursorProps {
 
 function SplashCursor({
   SIM_RESOLUTION = 128,
-  DYE_RESOLUTION = 1440,
+  DYE_RESOLUTION = 1024,
   CAPTURE_RESOLUTION = 512,
   DENSITY_DISSIPATION = 3.5,
   VELOCITY_DISSIPATION = 2,
@@ -36,7 +36,15 @@ function SplashCursor({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameId = useRef<number | null>(null);
 
+  // PERF: Skip entirely on mobile/touch devices
+  const isMobile = typeof window !== 'undefined' && (
+    window.matchMedia('(pointer: coarse)').matches ||
+    window.innerWidth < 768 ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+
   useEffect(() => {
+    if (isMobile) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -1104,7 +1112,10 @@ function SplashCursor({
       window.removeEventListener('touchend', handleTouchEnd);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isMobile]);
+
+  // PERF: Don't render canvas on mobile at all
+  if (isMobile) return null;
 
   return (
     <div
@@ -1132,3 +1143,4 @@ function SplashCursor({
 }
 
 export default SplashCursor;
+

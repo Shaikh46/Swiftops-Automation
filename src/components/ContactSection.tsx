@@ -112,7 +112,7 @@ export function ContactSection() {
   };
 
   return (
-    <section id="contact" className="relative w-full py-24 md:py-32 bg-gradient-to-b from-black to-[#020617] overflow-hidden">
+    <section id="contact" className="relative w-full py-16 md:py-24 lg:py-32 bg-gradient-to-b from-black to-[#020617] overflow-hidden">
       {/* Ambient Background Glows */}
       <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#00f0ff]/5 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-[#c300ff]/5 rounded-full blur-[150px] pointer-events-none"></div>
@@ -120,13 +120,13 @@ export function ContactSection() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="mb-16 md:mb-20 text-center max-w-2xl mx-auto">
+        <div className="mb-10 md:mb-16 lg:mb-20 text-center max-w-2xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="text-4xl md:text-6xl font-black tracking-tight text-white mb-6"
+            className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight text-white mb-4 sm:mb-6"
           >
             Get in <span className="text-[#00f0ff] drop-shadow-[0_0_20px_rgba(0,240,255,0.4)]">Touch</span>
           </motion.h2>
@@ -142,14 +142,14 @@ export function ContactSection() {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-start">
           {/* Contact Cards Grid */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 contact-grid-highlight-target rounded-[20px] transition-all duration-500"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 contact-grid-highlight-target rounded-[20px] transition-all duration-500"
           >
             {contactCards.map((card) => {
               const CardWrapper = card.href ? motion.a : motion.div;
@@ -165,7 +165,7 @@ export function ContactSection() {
                   {...wrapperProps}
                   variants={cardVariants}
                   className={`
-                    group relative flex flex-col p-6 rounded-2xl
+                    group relative flex flex-col p-4 sm:p-6 rounded-2xl min-h-[80px]
                     bg-white/[0.02] border border-white/5 backdrop-blur-sm
                     transition-all duration-500 ease-out
                     hover:-translate-y-1 hover:bg-white/[0.04] hover:border-white/10
@@ -227,7 +227,7 @@ export function ContactSection() {
                           required
                           onFocus={() => setFocusedField(field)}
                           onBlur={() => setFocusedField(null)}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:bg-white/10 transition-all duration-300 min-h-[56px]"
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:bg-white/10 transition-all duration-300 min-h-[52px] text-base"
                         />
                         {/* AI Focus Glow Underline */}
                         <div className={`absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-[#00f0ff] to-[#c300ff] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${focusedField === field ? 'w-full shadow-[0_0_15px_rgba(0,240,255,0.5)]' : 'w-0'}`} />
@@ -260,7 +260,7 @@ export function ContactSection() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="relative w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base bg-[#00f0ff]/10 border border-[#00f0ff]/40 text-[#00f0ff] transition-all duration-300 hover:bg-[#00f0ff]/20 hover:shadow-[0_0_30px_rgba(0,240,255,0.3)] min-h-[56px] overflow-hidden group"
+                    className="relative w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base bg-[#00f0ff]/10 border border-[#00f0ff]/40 text-[#00f0ff] transition-all duration-300 hover:bg-[#00f0ff]/20 hover:shadow-[0_0_30px_rgba(0,240,255,0.3)] min-h-[52px] overflow-hidden group"
                   >
                     {isSubmitting ? (
                       <motion.div

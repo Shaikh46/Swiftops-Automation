@@ -52,7 +52,7 @@ export function TestimonialsSection() {
   }, []);
 
   return (
-    <section id="testimonials" className="relative w-full py-24 md:py-32 bg-[#020617] overflow-hidden">
+    <section id="testimonials" className="relative w-full py-16 md:py-24 lg:py-32 bg-[#020617] overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,240,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,240,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_20%,transparent_100%)] opacity-30"></div>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#00f0ff]/5 rounded-full blur-[120px] pointer-events-none"></div>
@@ -65,7 +65,7 @@ export function TestimonialsSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16 md:mb-20"
         >
-          <h2 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/60 mb-6 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/60 mb-4 sm:mb-6 tracking-tight">
             Elite Client Profiles
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#00f0ff] to-transparent mx-auto opacity-50"></div>
@@ -87,7 +87,7 @@ export function TestimonialsSection() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
                 className={`
-                  relative group shrink-0 w-[85vw] md:w-auto snap-center
+                  relative group shrink-0 w-[calc(100vw-2rem)] md:w-auto snap-center
                   transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
                   ${isActive ? 'scale-100' : 'scale-[0.98] opacity-70 md:scale-100 md:opacity-100'}
                 `}

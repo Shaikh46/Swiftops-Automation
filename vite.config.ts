@@ -17,5 +17,20 @@ export default defineConfig({
   },
   build: {
     sourcemap: true,
+    // PERF: Optimize chunk splitting for faster initial load
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-motion': ['framer-motion'],
+          'vendor-spline': ['@splinetool/react-spline', '@splinetool/runtime'],
+          'vendor-icons': ['lucide-react'],
+        },
+      },
+    },
+    // PERF: Target modern browsers for smaller bundles
+    target: 'es2020',
+    // PERF: Enable CSS code splitting
+    cssCodeSplit: true,
   },
 });
