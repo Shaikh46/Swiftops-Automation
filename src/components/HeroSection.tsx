@@ -131,17 +131,17 @@ export function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1.2 }}
-            className="flex-1 relative flex items-center justify-center w-full order-2 mt-0 mb-8 sm:mt-4 sm:mb-12 lg:mt-0 lg:mb-0 h-[250px] sm:h-[300px] md:h-[420px] lg:h-[80vh] hero-animation animation-heavy"
+            className="flex-1 relative flex items-center justify-center w-full order-2 mt-0 mb-8 sm:mt-4 sm:mb-12 lg:mt-0 lg:mb-0 h-[300px] sm:h-[380px] md:h-[500px] lg:h-[90vh] hero-animation animation-heavy"
             style={{ willChange: 'transform, opacity', transform: 'translateZ(0)' }}
           >
             <div className="absolute inset-0 bg-gradient-to-l from-cyan-500/10 to-transparent hidden lg:block"></div>
             <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)] hidden lg:block"></div>
 
-            {/* Spline Scene Container — responsive sizing */}
-            <div className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] md:w-[380px] md:h-[380px] lg:w-full lg:h-full relative origin-center">
+            {/* Spline Scene Container — ENLARGED for prominence */}
+            <div className="w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] md:w-[460px] md:h-[460px] lg:w-full lg:h-full relative origin-center">
               <SplineScene
                 scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-                className="w-full h-full"
+                className="w-full h-full scale-110 md:scale-125 transform"
               />
               {/* Watermark cover */}
               <div className="absolute bottom-0 right-0 w-20 h-8 sm:w-24 sm:h-10 lg:w-36 lg:h-14 bg-black blur-sm"></div>
@@ -154,8 +154,8 @@ export function HeroSection() {
               )}
             </div>
 
-            {/* Robot ambient glow — reduced blur on mobile */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160px] h-[160px] sm:w-[200px] sm:h-[200px] md:w-[300px] md:h-[300px] lg:w-[500px] lg:h-[500px] bg-cyan-500/20 rounded-full blur-[40px] sm:blur-[60px] lg:blur-[100px] -z-10 md:animate-pulse"></div>
+            {/* Robot ambient glow — enlarged to match bigger robot */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] sm:w-[260px] sm:h-[260px] md:w-[380px] md:h-[380px] lg:w-[600px] lg:h-[600px] bg-cyan-500/20 rounded-full blur-[40px] sm:blur-[60px] lg:blur-[100px] -z-10 md:animate-pulse"></div>
           </motion.div>
         </div>
       </div>

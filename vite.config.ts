@@ -16,7 +16,8 @@ export default defineConfig({
     port: 5173,
   },
   build: {
-    sourcemap: true,
+    // PERF: No sourcemaps in production — halves output size
+    sourcemap: false,
     // PERF: Optimize chunk splitting for faster initial load
     rollupOptions: {
       output: {
@@ -32,5 +33,15 @@ export default defineConfig({
     target: 'es2020',
     // PERF: Enable CSS code splitting
     cssCodeSplit: true,
+    // PERF: Terser for aggressive minification
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    } as any,
+    // PERF: Performance budget — warn on chunks > 250KB
+    chunkSizeWarningLimit: 250,
   },
 });

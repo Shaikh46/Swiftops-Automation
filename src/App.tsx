@@ -3,8 +3,10 @@ import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Menu, X, ArrowRight, Bot, Zap, Workflow } from 'lucide-react'
 import { HeroSection } from './components/HeroSection'
 import { NeonButton } from './components/ui/NeonButton'
-import SplashCursor from './components/ui/SplashCursor'
-import { GlowTrail } from './components/ui/GlowTrail'
+
+// PERF: Lazy load GPU-intensive cursor effects — defer until after page is interactive
+const SplashCursor = lazy(() => import('./components/ui/SplashCursor'))
+const GlowTrail = lazy(() => import('./components/ui/GlowTrail').then(m => ({ default: m.GlowTrail })))
 
 // PERF: Lazy load below-fold sections
 const AboutSection = lazy(() => import('./components/AboutSection').then(m => ({ default: m.AboutSection })))
@@ -668,18 +670,23 @@ function App() {
         </div>
       </footer>
     </motion.div>
-    <SplashCursor
-      SIM_RESOLUTION={128}
-      DYE_RESOLUTION={1024}
-      DENSITY_DISSIPATION={3.5}
-      VELOCITY_DISSIPATION={2}
-      PRESSURE={0.1}
-      CURL={3}
-      SPLAT_RADIUS={0.2}
-      SPLAT_FORCE={6000}
-      COLOR_UPDATE_SPEED={10}
-    />
-    <GlowTrail />
+    {/* PERF: Lazy load GPU-intensive effects after page is interactive */}
+    <Suspense fallback={null}>
+      <SplashCursor
+        SIM_RESOLUTION={128}
+        DYE_RESOLUTION={1024}
+        DENSITY_DISSIPATION={3.5}
+        VELOCITY_DISSIPATION={2}
+        PRESSURE={0.1}
+        CURL={3}
+        SPLAT_RADIUS={0.2}
+        SPLAT_FORCE={6000}
+        COLOR_UPDATE_SPEED={10}
+      />
+    </Suspense>
+    <Suspense fallback={null}>
+      <GlowTrail />
+    </Suspense>
     </>
   )
 }

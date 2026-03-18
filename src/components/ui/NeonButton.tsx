@@ -20,6 +20,11 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
   const [ripples, setRipples] = useState<{ x: number; y: number; id: number }[]>([]);
   const buttonRef = useRef<HTMLAnchorElement>(null);
   
+  // PERF: Cache touch device check once instead of querying on every mouse move
+  const isTouchDevice = useRef(
+    typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+  );
+
   // Magnetic effect state
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
@@ -34,8 +39,8 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
   }, [ripples]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // PERF: Skip magnetic effect on touch devices
-    if (window.matchMedia('(pointer: coarse)').matches) return;
+    // PERF: Use cached touch device check
+    if (isTouchDevice.current) return;
     if (!buttonRef.current) return;
     const { left, top, width, height } = buttonRef.current.getBoundingClientRect();
     const x = (e.clientX - left - width / 2) * 0.2;
