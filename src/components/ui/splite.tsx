@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, lazy, useState } from 'react'
+import { Suspense, lazy, useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
 // PERF: Lazy-load the heavy Spline runtime (~200KB) into its own chunk
@@ -14,32 +14,48 @@ interface SplineSceneProps {
 /**
  * Hybrid SplineScene component:
  * - Immediately renders a lightweight CSS robot animation (the fallback)
- * - Lazily loads the real Spline 3D scene in a separate chunk
+ * - Defers Spline loading until browser is idle (requestIdleCallback)
  * - Once Spline is ready, it replaces the CSS fallback seamlessly
  * - Zero performance impact on initial page load (FCP, LCP unaffected)
  */
 export function SplineScene({ scene, className }: SplineSceneProps) {
   const [splineLoaded, setSplineLoaded] = useState(false)
+  const [shouldLoad, setShouldLoad] = useState(false)
+
+  // PERF: Defer Spline download until browser is idle — keeps main thread free for hydration
+  useEffect(() => {
+    const ric = typeof window !== 'undefined' && 'requestIdleCallback' in window
+      ? window.requestIdleCallback
+      : (cb: () => void) => setTimeout(cb, 200);
+    const id = ric(() => setShouldLoad(true));
+    return () => {
+      if ('cancelIdleCallback' in window) {
+        window.cancelIdleCallback(id as number);
+      }
+    };
+  }, []);
 
   return (
     <div className={`relative w-full h-full ${className || ''}`}>
       {/* CSS Robot Fallback — visible until Spline finishes loading */}
       {!splineLoaded && <SplineFallback />}
 
-      {/* Real Spline 3D Scene — lazy-loaded, replaces fallback when ready */}
-      <Suspense fallback={null}>
-        <div
-          className={`absolute inset-0 transition-opacity duration-700 ${
-            splineLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <Spline
-            scene={scene}
-            className="w-full h-full"
-            onLoad={() => setSplineLoaded(true)}
-          />
-        </div>
-      </Suspense>
+      {/* Real Spline 3D Scene — deferred + lazy-loaded, replaces fallback when ready */}
+      {shouldLoad && (
+        <Suspense fallback={null}>
+          <div
+            className={`absolute inset-0 transition-opacity duration-700 ${
+              splineLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <Spline
+              scene={scene}
+              className="w-full h-full"
+              onLoad={() => setSplineLoaded(true)}
+            />
+          </div>
+        </Suspense>
+      )}
     </div>
   )
 }

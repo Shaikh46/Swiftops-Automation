@@ -5,15 +5,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Automateze AI</title>
+  <meta name="description" content="SwiftOps Automation — Intelligent AI-driven automation solutions for modern enterprises. AI agents, chatbots, workflow automation, and custom digital solutions.">
 
-  <!-- PERF: Preconnect to Google Fonts for faster LCP -->
+  <!-- PERF: Preconnect to Google Fonts + Spline CDN -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://prod.spline.design" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
 
   <!-- Preload critical assets -->
-  <link rel="preload" href="/videos/loading-animation.mp4" as="video" type="video/mp4" crossorigin>
+  <link rel="preload" href="/videos/loading-animation.mp4" as="video" type="video/mp4" crossorigin fetchpriority="low">
   <link rel="preload" href="/images/swiftops-logo.jpeg" as="image" fetchpriority="high">
 
   <style>
@@ -68,12 +70,16 @@
       border-bottom-right-radius: 10px;
       display: none;
     }
+
+    /* PERF: Reserve space to prevent CLS */
+    #root { min-height: 100vh; }
   </style>
-  <script type="module" crossorigin src="/assets/index-CIukxAwm.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/vendor-react-DEw6NKnv.js">
-  <link rel="modulepreload" crossorigin href="/assets/vendor-motion-B32wX_B_.js">
-  <link rel="modulepreload" crossorigin href="/assets/vendor-icons-BCUN7Ws9.js">
-  <link rel="stylesheet" crossorigin href="/assets/index-D0VFwRI1.css">
+  <script type="module" crossorigin src="/assets/index-COLvbaqg.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/vendor-motion-C5rVw5mH.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-react-4NmgHXEe.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-spline-RvGTahH2.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-icons-Bm_s5Bgn.js">
+  <link rel="stylesheet" crossorigin href="/assets/index-3okPM9lt.css">
 </head>
 
 <body style="font-family: 'Inter', sans-serif;">
@@ -138,7 +144,7 @@
           setTimeout(function () {
             clearInterval(checkInterval);
           }, 15000);
-        }, 2000); // Wait 3 seconds after DOM ready to load chatbot
+        }, 4000); // PERF: Defer chatbot 4s to let core JS hydrate first
       });
     });
   </script> <!-- ← FIXED: Added missing closing tag -->

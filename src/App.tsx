@@ -336,20 +336,27 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
 
-  // PERF: Single scroll handler
+  // PERF: Throttled scroll handler — rAF prevents redundant calls during same frame
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-      const sections = ['home', 'services', 'workflow', 'about', 'contact']
-      const current = sections.find(section => {
-        const element = document.getElementById(section)
-        if (element) {
-          const rect = element.getBoundingClientRect()
-          return rect.top <= 100 && rect.bottom >= 100
-        }
-        return false
-      })
-      if (current) setActiveSection(current)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 20)
+          const sections = ['home', 'services', 'workflow', 'about', 'contact']
+          const current = sections.find(section => {
+            const element = document.getElementById(section)
+            if (element) {
+              const rect = element.getBoundingClientRect()
+              return rect.top <= 150 && rect.bottom >= 150
+            }
+            return false
+          })
+          if (current) setActiveSection(current)
+          ticking = false;
+        });
+        ticking = true;
+      }
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
@@ -409,7 +416,7 @@ function Navbar() {
           {/* Logo — fluid sizing from 320px up */}
           <a href="#home" onClick={(e) => scrollToSection(e, '#home')} className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 group z-10 shrink-0">
             <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg sm:rounded-xl overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(0,255,255,0.6)] group-hover:shadow-[0_0_20px_rgba(0,255,255,0.9)] transition-shadow duration-300 border border-[rgba(0,255,255,0.3)]">
-              <img src="/images/swiftops-logo.jpeg" alt="SwiftOps Logo" className="w-full h-full object-contain" />
+              <img src="/images/swiftops-logo.jpeg" alt="SwiftOps Logo" width="40" height="40" decoding="async" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
               <span className="text-[#00ffff] font-bold tracking-[0.08em] sm:tracking-[0.1em] lg:tracking-[0.15em] text-[13px] sm:text-sm lg:text-base uppercase leading-tight drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">
@@ -643,7 +650,7 @@ function App() {
             {/* Brand */}
             <a href="#home" onClick={(e) => { e.preventDefault(); document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' }); }} className="flex items-center gap-3 group">
               <div className="w-8 h-8 rounded-lg overflow-hidden shadow-[0_0_8px_rgba(0,229,255,0.5)] group-hover:shadow-[0_0_15px_rgba(0,229,255,0.8)] transition-shadow duration-300">
-                <img src="/images/swiftops-logo.jpeg" alt="SwiftOps Logo" className="w-full h-full object-contain" loading="lazy" />
+                <img src="/images/swiftops-logo.jpeg" alt="SwiftOps Logo" width="32" height="32" decoding="async" className="w-full h-full object-contain" loading="lazy" />
               </div>
               <span className="text-neutral-400 text-sm font-medium group-hover:text-[#00E5FF] transition-colors duration-300">SwiftOps Automation</span>
             </a>

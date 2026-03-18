@@ -138,7 +138,7 @@ export function HeroSection() {
             <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)] hidden lg:block"></div>
 
             {/* Spline Scene Container — ENLARGED for prominence */}
-            <div className="w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] md:w-[460px] md:h-[460px] lg:w-full lg:h-full relative origin-center">
+            <div className="w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] md:w-[460px] md:h-[460px] lg:w-full lg:h-full relative origin-center" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 460px' }}>
               <SplineScene
                 scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
                 className="w-full h-full scale-110 md:scale-125 transform"

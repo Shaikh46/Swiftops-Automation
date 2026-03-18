@@ -39,12 +39,27 @@ body {
   .animation-heavy {
     transform: scale(0.9) translateZ(0);
   }
-  /* Reduce blur intensity on mobile for GPU savings */
+  /* PERF: Reduce blur intensity on mobile — GPU's biggest bottleneck */
   .backdrop-blur-xl {
-    --tw-backdrop-blur: blur(8px) !important;
+    --tw-backdrop-blur: blur(6px) !important;
+  }
+  .backdrop-blur-lg {
+    --tw-backdrop-blur: blur(6px) !important;
   }
   .backdrop-blur-md {
-    --tw-backdrop-blur: blur(6px) !important;
+    --tw-backdrop-blur: blur(4px) !important;
+  }
+  .backdrop-blur-sm {
+    --tw-backdrop-blur: blur(2px) !important;
+  }
+  /* PERF: Contain paint scope — prevents full-page repaints during scroll */
+  section {
+    contain: layout style paint;
+  }
+  /* PERF: content-visibility defers rendering of offscreen sections */
+  section[id] {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 600px;
   }
 }
 
