@@ -1,4 +1,6 @@
-import { SplineScene } from "@/components/ui/splite";
+import { Suspense, lazy } from "react";
+// PERF: Lazy load 3D scene to prevent blocking main thread parsing
+const SplineScene = lazy(() => import("@/components/ui/splite").then(m => ({ default: m.SplineScene })));
 import { Spotlight } from "@/components/ui/spotlight";
 import { motion } from "framer-motion";
 import { ArrowRight, Zap } from "lucide-react";
@@ -139,10 +141,12 @@ export function HeroSection() {
 
             {/* Spline Scene Container — ENLARGED for prominence */}
             <div className="w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] md:w-[460px] md:h-[460px] lg:w-full lg:h-full relative origin-center" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 460px' }}>
-              <SplineScene
-                scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-                className="w-full h-full scale-110 md:scale-125 transform"
-              />
+              <Suspense fallback={null}>
+                <SplineScene
+                  scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+                  className="w-full h-full scale-110 md:scale-125 transform"
+                />
+              </Suspense>
               {/* Watermark cover */}
               <div className="absolute bottom-0 right-0 w-20 h-8 sm:w-24 sm:h-10 lg:w-36 lg:h-14 bg-black blur-sm"></div>
               
