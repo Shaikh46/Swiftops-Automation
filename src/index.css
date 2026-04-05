@@ -20,6 +20,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-family: 'Inter', sans-serif;
+  touch-action: manipulation; /* PERF: Removes 300ms tap delay on mobile universally */
 }
 
 /* PERF: Only apply transitions where explicitly needed — no global wildcard */
@@ -57,6 +58,7 @@ body {
   /* PERF: Contain paint scope — prevents full-page repaints during scroll */
   section {
     contain: layout style paint;
+    will-change: transform, opacity;
   }
   /* PERF: content-visibility defers rendering of offscreen sections */
   section[id] {

@@ -29,8 +29,8 @@ export default defineConfig({
         },
       },
     },
-    // PERF: Target modern browsers for smaller bundles
-    target: 'es2020',
+    // PERF: Target modern browsers for smaller bundles and less polyfills
+    target: 'esnext',
     // PERF: Enable CSS code splitting
     cssCodeSplit: true,
     // PERF: Terser for aggressive minification
