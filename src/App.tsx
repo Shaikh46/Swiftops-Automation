@@ -26,6 +26,33 @@ const SectionFallback = () => (
   </div>
 )
 
+// PERF: True Lazy Loading wrapper. Fetch chunks only when scrolled into view.
+function LazySection({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0, margin: "400px 0px" });
+  return <div ref={ref}>{isInView ? children : <SectionFallback />}</div>;
+}
+
+// PERF: Delayed wrapper for heavy WebGL/Mouse interactions to unblock initial load
+function InteractiveOnly({ children }: { children: React.ReactNode }) {
+  const [interacted, setInteracted] = useState(false);
+  useEffect(() => {
+    const enable = () => setInteracted(true);
+    window.addEventListener('scroll', enable, { once: true, passive: true });
+    window.addEventListener('mousemove', enable, { once: true, passive: true });
+    window.addEventListener('touchstart', enable, { once: true, passive: true });
+    const timer = setTimeout(enable, 6000);
+    return () => {
+      window.removeEventListener('scroll', enable);
+      window.removeEventListener('mousemove', enable);
+      window.removeEventListener('touchstart', enable);
+      clearTimeout(timer);
+    };
+  }, []);
+  if (!interacted) return null;
+  return <>{children}</>;
+}
+
 // Sections moved to lazy imports
 
 function Navbar() {
@@ -296,36 +323,53 @@ function App() {
 
         <HeroSection />
         
-        <Suspense fallback={<SectionFallback />}>
-          <AboutSection />
-        </Suspense>
+        <LazySection>
+          <Suspense fallback={<SectionFallback />}>
+            <AboutSection />
+          </Suspense>
+        </LazySection>
         
-        <Suspense fallback={<SectionFallback />}>
-          <StatsSection />
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
-          <WorkflowSection />
-        </Suspense>
+        <LazySection>
+          <Suspense fallback={<SectionFallback />}>
+            <StatsSection />
+          </Suspense>
+        </LazySection>
         
-        <Suspense fallback={<SectionFallback />}>
-          <ServicesSection />
-        </Suspense>
+        <LazySection>
+          <Suspense fallback={<SectionFallback />}>
+            <WorkflowSection />
+          </Suspense>
+        </LazySection>
         
-        <Suspense fallback={<SectionFallback />}>
-          <TestimonialsSection />
-        </Suspense>
+        <LazySection>
+          <Suspense fallback={<SectionFallback />}>
+            <ServicesSection />
+          </Suspense>
+        </LazySection>
         
-        <Suspense fallback={<SectionFallback />}>
-          <FounderSection />
-        </Suspense>
+        <LazySection>
+          <Suspense fallback={<SectionFallback />}>
+            <TestimonialsSection />
+          </Suspense>
+        </LazySection>
         
-        <Suspense fallback={<SectionFallback />}>
-          <CTASection />
-        </Suspense>
+        <LazySection>
+          <Suspense fallback={<SectionFallback />}>
+            <FounderSection />
+          </Suspense>
+        </LazySection>
         
-        <Suspense fallback={<SectionFallback />}>
-          <ContactSection />
-        </Suspense>
+        <LazySection>
+          <Suspense fallback={<SectionFallback />}>
+            <CTASection />
+          </Suspense>
+        </LazySection>
+        
+        <LazySection>
+          <Suspense fallback={<SectionFallback />}>
+            <ContactSection />
+          </Suspense>
+        </LazySection>
 
       {/* Footer */}
       <footer className="bg-black border-t border-white/5 py-8 md:py-10 safe-bottom">
@@ -362,22 +406,24 @@ function App() {
       </footer>
     </motion.div>
     {/* PERF: Lazy load GPU-intensive effects after page is interactive */}
-    <Suspense fallback={null}>
-      <SplashCursor
-        SIM_RESOLUTION={128}
-        DYE_RESOLUTION={1024}
-        DENSITY_DISSIPATION={3.5}
-        VELOCITY_DISSIPATION={2}
-        PRESSURE={0.1}
-        CURL={3}
-        SPLAT_RADIUS={0.2}
-        SPLAT_FORCE={6000}
-        COLOR_UPDATE_SPEED={10}
-      />
-    </Suspense>
-    <Suspense fallback={null}>
-      <GlowTrail />
-    </Suspense>
+    <InteractiveOnly>
+      <Suspense fallback={null}>
+        <SplashCursor
+          SIM_RESOLUTION={128}
+          DYE_RESOLUTION={1024}
+          DENSITY_DISSIPATION={3.5}
+          VELOCITY_DISSIPATION={2}
+          PRESSURE={0.1}
+          CURL={3}
+          SPLAT_RADIUS={0.2}
+          SPLAT_FORCE={6000}
+          COLOR_UPDATE_SPEED={10}
+        />
+      </Suspense>
+      <Suspense fallback={null}>
+        <GlowTrail />
+      </Suspense>
+    </InteractiveOnly>
     </>
   )
 }
