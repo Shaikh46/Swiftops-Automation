@@ -105,7 +105,7 @@ export function CTASection() {
           <motion.div
             animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute inset-0 bg-[#00E5FF] rounded-2xl blur-xl"
+            className="absolute inset-0 bg-[#00E5FF] rounded-2xl blur-xl pointer-events-none"
           />
           
           <NeonButton href="#contact">

@@ -38,7 +38,7 @@ export function WorkflowSection() {
 
         <div className="relative">
           {/* Connecting Line (Desktop) */}
-          <div className="hidden md:block absolute top-1/2 left-[10%] right-[10%] h-px bg-white/10 -translate-y-1/2 z-0">
+          <div className="hidden md:block absolute pointer-events-none top-1/2 left-[10%] right-[10%] h-px bg-white/10 -translate-y-1/2 z-0">
             <motion.div
               initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
@@ -72,7 +72,7 @@ export function WorkflowSection() {
                 style={{ transform: 'translateZ(0)' }}
               >
                 <div className="relative mx-auto w-14 h-14 md:w-16 md:h-16 mb-5 md:mb-6 flex items-center justify-center">
-                  <div className="absolute inset-0 bg-[#00E5FF]/10 rounded-xl border border-[#00E5FF]/40 transform rotate-3 group-hover:rotate-6 transition-transform duration-300"></div>
+                  <div className="absolute inset-0 pointer-events-none bg-[#00E5FF]/10 rounded-xl border border-[#00E5FF]/40 transform rotate-3 group-hover:rotate-6 transition-transform duration-300"></div>
                   <step.icon className="w-7 h-7 md:w-8 md:h-8 text-[#00E5FF] drop-shadow-[0_0_10px_rgba(0,229,255,0.8)] relative z-10" />
                 </div>
                 

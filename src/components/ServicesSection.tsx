@@ -380,7 +380,7 @@ export function ServicesSection() {
   return (
     <section id="services" className="relative w-full py-20 md:py-32 bg-gradient-to-b from-black to-[#020617] overflow-hidden">
       {/* Futuristic AI Grid Background */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(0,229,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,229,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)] opacity-60"></div>
+      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(0,229,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,229,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)] opacity-60"></div>
       
       {/* Ambient Neon Glows */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#00E5FF]/5 rounded-full blur-[120px] pointer-events-none"></div>

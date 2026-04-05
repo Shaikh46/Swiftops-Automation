@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>Automateze AI</title>
   <meta name="description" content="SwiftOps Automation — Intelligent AI-driven automation solutions for modern enterprises. AI agents, chatbots, workflow automation, and custom digital solutions.">
 
@@ -12,10 +12,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://prod.spline.design" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
+    rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"></noscript>
 
   <!-- Preload critical assets -->
   <link rel="preload" href="/images/swiftops-logo.jpeg" as="image" fetchpriority="high">
+  <link rel="preload" href="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" as="fetch" crossorigin>
 
   <style>
     /* Jotform Chatbot Branding Hide */
@@ -44,23 +46,26 @@
     /* PERF: Reserve space to prevent CLS */
     #root { min-height: 100vh; }
   </style>
-  <script type="module" crossorigin src="/assets/index-Cx94HaH0.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/vendor-motion-C5rVw5mH.js">
-  <link rel="modulepreload" crossorigin href="/assets/vendor-react-4NmgHXEe.js">
-  <link rel="modulepreload" crossorigin href="/assets/vendor-spline-RvGTahH2.js">
-  <link rel="modulepreload" crossorigin href="/assets/vendor-icons-Bm_s5Bgn.js">
-  <link rel="stylesheet" crossorigin href="/assets/index-C16eMEag.css">
+  <script type="module" crossorigin src="/assets/index-BNRW3R8r.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/vendor-react-BMHNi2HR.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-motion-CWOk7Rc9.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-spline-COCTzpY4.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-icons-Dhjgc8oL.js">
+  <link rel="stylesheet" crossorigin href="/assets/index-xTJm5tpk.css">
 </head>
 
 <body style="font-family: 'Inter', sans-serif;">
   <div id="root"></div>
   <div id="jotform-branding-overlay"></div>
 
-  <!-- Jotform Chatbot Integration -->
+  <!-- Jotform Chatbot Integration (Deferred until interaction) -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // Defer non-critical script loading
-      setTimeout(() => {
+      let scriptLoaded = false;
+      const loadJotform = () => {
+        if (scriptLoaded) return;
+        scriptLoaded = true;
+
         var script = document.createElement('script');
         script.src = "https://cdn.jotfor.ms/agent/embedjs/019c325ea1fa7d58858edbc5056d52742880/embed.js";
         script.async = true;
@@ -79,9 +84,17 @@
         setTimeout(function () {
           clearInterval(checkInterval);
         }, 15000);
-      }, 4000); // PERF: Defer chatbot 4s to let core JS hydrate first
+      };
+
+      // PERF: Load on user interaction to save LCP/TBT metrics
+      window.addEventListener('scroll', loadJotform, { passive: true, once: true });
+      window.addEventListener('mousemove', loadJotform, { passive: true, once: true });
+      window.addEventListener('touchstart', loadJotform, { passive: true, once: true });
+      
+      // Fallback if no interaction
+      setTimeout(loadJotform, 8000);
     });
-  </script> <!-- ← FIXED: Added missing closing tag -->
+  </script>
 
   <!-- Vercel Speed Insights -->
   <script>

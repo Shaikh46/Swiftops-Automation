@@ -4,7 +4,7 @@ export function FounderSection() {
   return (
     <section className="relative w-full py-16 md:py-24 bg-black overflow-hidden">
       {/* Ambient Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,229,255,0.03),transparent_70%)]"></div>
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(0,229,255,0.03),transparent_70%)]"></div>
       
       {/* Animated Particles — reduced from 15 to 8 */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -39,10 +39,10 @@ export function FounderSection() {
           className="group relative bg-[#0a121e]/60 backdrop-blur-lg border border-white/[0.08] rounded-2xl sm:rounded-[32px] p-6 sm:p-10 md:p-16 text-center overflow-hidden transition-all duration-500 hover:border-[#00E5FF]/40 hover:shadow-[0_20px_60px_-15px_rgba(0,229,255,0.2)]"
         >
           {/* Hover Glow Background */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#00E5FF]/0 to-[#00E5FF]/0 group-hover:from-[#00E5FF]/5 group-hover:to-transparent transition-colors duration-500"></div>
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-[#00E5FF]/0 to-[#00E5FF]/0 group-hover:from-[#00E5FF]/5 group-hover:to-transparent transition-colors duration-500"></div>
           
           {/* Top Edge Highlight */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-[#00E5FF]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px pointer-events-none bg-gradient-to-r from-transparent via-[#00E5FF]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
           <div className="relative z-10 flex flex-col items-center">
             {/* Floating Animation Container */}

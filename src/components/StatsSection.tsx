@@ -63,7 +63,7 @@ export function StatsSection() {
   return (
     <section className="relative w-full py-20 md:py-24 bg-[#020617] overflow-hidden">
       {/* Moving Grid Pattern — CSS-only, no framer-motion */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(0,229,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,229,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_20%,transparent_100%)] opacity-30">
+      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(0,229,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,229,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_20%,transparent_100%)] opacity-30">
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -94,7 +94,7 @@ export function StatsSection() {
               style={{ transform: 'translateZ(0)' }}
             >
               {/* Subtle glow behind numbers */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[#00E5FF]/10 rounded-full blur-[40px] group-hover:bg-[#00E5FF]/20 transition-colors duration-500"></div>
+              <div className="absolute top-1/2 left-1/2 pointer-events-none -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[#00E5FF]/10 rounded-full blur-[40px] group-hover:bg-[#00E5FF]/20 transition-colors duration-500"></div>
               
               <Counter value={stat.value} suffix={stat.suffix} />
               <p className="text-slate-400 text-xs sm:text-sm font-medium tracking-widest uppercase mt-4 relative z-10">

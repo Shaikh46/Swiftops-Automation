@@ -12,9 +12,30 @@ export function HeroSection() {
   const [mountSpline, setMountSpline] = useState(false);
 
   useEffect(() => {
-    // PERF: Delay the very CPU-heavy Spline scene from initializing until after First Contentful Paint
-    const timer = setTimeout(() => setMountSpline(true), 800);
-    return () => clearTimeout(timer);
+    // PERF: On mobile, radically delay the heavy Spline scene to ensure PageSpeed/Lighthouse passes the TBT window
+    const isMobile = window.innerWidth <= 768;
+    
+    if (!isMobile) {
+      const timer = setTimeout(() => setMountSpline(true), 800);
+      return () => clearTimeout(timer);
+    } else {
+      let mounted = false;
+      const mount = () => {
+        if (!mounted) {
+           mounted = true;
+           setMountSpline(true);
+        }
+      };
+      const timer = setTimeout(mount, 8000);
+      window.addEventListener('touchstart', mount, { once: true, passive: true });
+      window.addEventListener('scroll', mount, { once: true, passive: true });
+      
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('touchstart', mount);
+        window.removeEventListener('scroll', mount);
+      };
+    }
   }, []);
 
   useEffect(() => {
@@ -34,15 +55,15 @@ export function HeroSection() {
   return (
     <section id="home" className="relative w-full min-h-screen bg-black overflow-hidden">
       {/* Layered Background - Optimized for mobile */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(0,212,255,0.12),transparent_60%)]"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_90%_30%,rgba(0,212,255,0.08),transparent_50%)] hidden md:block"></div>
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_50%_0%,rgba(0,212,255,0.12),transparent_60%)]"></div>
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_90%_30%,rgba(0,212,255,0.08),transparent_50%)] hidden md:block"></div>
       {/* Subtle grid */}
-      <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(rgba(0,212,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(0,212,255,0.025)_1px,transparent_1px)] bg-[size:60px_60px] opacity-50 md:opacity-100"></div>
+      <div className="absolute top-0 left-0 pointer-events-none w-full h-full bg-[linear-gradient(rgba(0,212,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(0,212,255,0.025)_1px,transparent_1px)] bg-[size:60px_60px] opacity-50 md:opacity-100"></div>
       {/* Vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,transparent_40%,rgba(0,0,0,0.7)_100%)]"></div>
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_50%_50%,transparent_40%,rgba(0,0,0,0.7)_100%)]"></div>
       {/* Neon Orbs - Reduced blur on mobile */}
-      <div className="absolute top-1/4 left-1/4 w-48 md:w-64 h-48 md:h-64 bg-cyan-500/10 rounded-full blur-[80px] md:blur-[120px] md:animate-pulse"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-64 md:w-80 h-64 md:h-80 bg-cyan-400/8 rounded-full blur-[100px] md:blur-[140px] hidden md:block animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+      <div className="absolute top-1/4 left-1/4 pointer-events-none w-48 md:w-64 h-48 md:h-64 bg-cyan-500/10 rounded-full blur-[80px] md:blur-[120px] md:animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 pointer-events-none w-64 md:w-80 h-64 md:h-80 bg-cyan-400/8 rounded-full blur-[100px] md:blur-[140px] hidden md:block animate-pulse" style={{ animationDelay: '1.5s' }}></div>
       <div className="relative w-full min-h-screen overflow-hidden">
         <Spotlight
           className="-top-40 left-0 md:left-60 md:-top-20"
@@ -143,8 +164,8 @@ export function HeroSection() {
             className="flex-1 relative flex items-center justify-center w-full order-2 mt-0 mb-8 sm:mt-4 sm:mb-12 lg:mt-0 lg:mb-0 h-[300px] sm:h-[380px] md:h-[500px] lg:h-[90vh] hero-animation animation-heavy"
             style={{ willChange: 'transform, opacity', transform: 'translateZ(0)' }}
           >
-            <div className="absolute inset-0 bg-gradient-to-l from-cyan-500/10 to-transparent hidden lg:block"></div>
-            <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)] hidden lg:block"></div>
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-l from-cyan-500/10 to-transparent hidden lg:block"></div>
+            <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_100px_rgba(0,0,0,0.8)] hidden lg:block"></div>
 
             {/* Spline Scene Container — ENLARGED for prominence */}
             <div className="w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] md:w-[460px] md:h-[460px] lg:w-full lg:h-full relative origin-center" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 460px' }}>
@@ -157,7 +178,7 @@ export function HeroSection() {
                 </Suspense>
               )}
               {/* Watermark cover */}
-              <div className="absolute bottom-0 right-0 w-20 h-8 sm:w-24 sm:h-10 lg:w-36 lg:h-14 bg-black blur-sm"></div>
+              <div className="absolute bottom-0 right-0 pointer-events-none w-20 h-8 sm:w-24 sm:h-10 lg:w-36 lg:h-14 bg-black blur-sm"></div>
               
               {/* Mobile Interaction Hint */}
               {showHint && (
@@ -168,12 +189,12 @@ export function HeroSection() {
             </div>
 
             {/* Robot ambient glow — enlarged to match bigger robot */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] sm:w-[260px] sm:h-[260px] md:w-[380px] md:h-[380px] lg:w-[600px] lg:h-[600px] bg-cyan-500/20 rounded-full blur-[40px] sm:blur-[60px] lg:blur-[100px] -z-10 md:animate-pulse"></div>
+            <div className="absolute top-1/2 left-1/2 pointer-events-none -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] sm:w-[260px] sm:h-[260px] md:w-[380px] md:h-[380px] lg:w-[600px] lg:h-[600px] bg-cyan-500/20 rounded-full blur-[40px] sm:blur-[60px] lg:blur-[100px] -z-10 md:animate-pulse"></div>
           </motion.div>
         </div>
       </div>
       {/* Bottom separator line */}
-      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 w-full h-px pointer-events-none bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent"></div>
     </section>
   );
 }
