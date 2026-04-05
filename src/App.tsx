@@ -279,36 +279,17 @@ function Navbar() {
 }
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    const handleLoadingComplete = () => {
-      setIsLoading(false);
-    };
-
-    // Check if loader is already gone
-    if (!document.getElementById('initial-loader')) {
-      setIsLoading(false);
-    } else {
-      window.addEventListener('initial-loading-complete', handleLoadingComplete);
-    }
-
-    return () => {
-      window.removeEventListener('initial-loading-complete', handleLoadingComplete);
-    };
-  }, []);
-
   return (
     <>
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: isLoading ? 0 : 1 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.4 }}
         className="bg-black text-white min-h-screen"
         style={{ 
-          visibility: isLoading ? 'hidden' : 'visible',
-          height: isLoading ? '100vh' : 'auto',
-          overflow: isLoading ? 'hidden' : 'visible'
+          visibility: 'visible',
+          height: 'auto',
+          overflow: 'visible'
         }}
       >
         <Navbar />
