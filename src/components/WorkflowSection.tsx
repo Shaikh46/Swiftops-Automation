@@ -22,7 +22,7 @@ const workflowSteps = [
 
 export function WorkflowSection() {
   return (
-    <section id="workflow" className="relative w-full py-24 md:py-32 bg-black overflow-hidden">
+    <section id="automation" className="relative w-full py-24 md:py-32 bg-black overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

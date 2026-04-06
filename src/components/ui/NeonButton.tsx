@@ -104,10 +104,10 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
       transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
       className={`
         relative inline-flex items-center justify-center gap-2 
-        px-8 py-4 rounded-xl font-bold text-base
+        px-8 py-4 rounded-[50px] font-bold text-base
         min-h-[56px] /* MOBILE: Ensure >= 56px tap area */
-        bg-[#0a121e]/40 backdrop-blur-md
-        border border-[#00f0ff]/40
+        bg-white/5 backdrop-blur-[20px]
+        border border-[#00f0ff]/20
         text-[#00f0ff]
         transition-colors duration-300 ease-out
         hover:border-[#00f0ff]
@@ -120,7 +120,7 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
       {...props}
     >
       {/* Container for internal effects that need clipping */}
-      <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden rounded-[50px] pointer-events-none">
         {/* Idle Breathing Glow */}
         <div className="absolute inset-0 opacity-50 animate-breathing-glow" />
 
@@ -155,7 +155,7 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
             }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute w-32 h-32 rounded-full border-[#c300ff] bg-gradient-to-r from-[#00f0ff]/20 to-[#c300ff]/20 blur-[2px] pointer-events-none -z-10"
+            className="absolute w-32 h-32 rounded-[50px] border-[#c300ff] bg-gradient-to-r from-[#00f0ff]/20 to-[#c300ff]/20 blur-[2px] pointer-events-none -z-10"
           />
         ))}
       </AnimatePresence>

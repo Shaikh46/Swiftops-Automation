@@ -15,6 +15,7 @@ html {
   overscroll-behavior-y: none;
   text-size-adjust: 100%;
   will-change: scroll-position;
+  scroll-padding-top: 80px;
 }
 
 body {
@@ -243,6 +244,46 @@ a, button, [role="button"] {
   .glow-trail {
     display: none !important;
   }
+}
+
+/* Custom Ultra Premium Animations */
+@keyframes kenBurns {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes floatRobot {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes buttonPulse {
+  0%, 100% { box-shadow: 0 0 20px #00fff7, 0 0 40px rgba(0,255,247,0.3); transform: scale(1) translateZ(0); }
+  50% { box-shadow: 0 0 30px #00fff7, 0 0 60px rgba(0,255,247,0.4); transform: scale(1.02) translateZ(0); }
+}
+
+.bg-ken-burns {
+  animation: kenBurns 20s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+.float-robot {
+  animation: floatRobot 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+.pulse-4s {
+  animation: buttonPulse 4s ease-in-out infinite;
+  will-change: transform, box-shadow;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 255, 255, 0.15);
 }
 
 /* Safe area padding for notched devices */

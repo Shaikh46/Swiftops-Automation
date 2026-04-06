@@ -97,30 +97,31 @@ function Navbar() {
   }, [mobileOpen])
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Services', href: '#services' },
-    { name: 'Automation', href: '#workflow' },
-    { name: 'About', href: '#about' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', id: 'home' },
+    { name: 'Services', id: 'services' },
+    { name: 'Automation', id: 'automation' },
+    { name: 'About', id: 'about' },
+    { name: 'Contact', id: 'contact' },
   ]
 
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    const targetId = href.replace('#', '')
-    const element = document.getElementById(targetId)
-    if (element) {
-      e.preventDefault()
-      element.scrollIntoView({ behavior: 'smooth' })
-      setMobileOpen(false)
-      
-      if (targetId === 'contact') {
-        const contactSection = document.getElementById('contact')
-        if (contactSection) {
-          contactSection.classList.add('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black', 'transition-all', 'duration-500')
-          setTimeout(() => {
-            contactSection.classList.remove('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black')
-          }, 1500)
-        }
+  const scrollToSection = (id: string) => {
+    if (id === 'contact') {
+      const contactSection = document.getElementById('contact');
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        contactSection.classList.add('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black', 'transition-all', 'duration-500');
+        setTimeout(() => contactSection.classList.remove('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black'), 1500);
+      } else {
+        window.location.href = '/contact';
       }
+      setMobileOpen(false);
+      return;
+    }
+
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setMobileOpen(false);
     }
   }
 
@@ -138,7 +139,7 @@ function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 lg:h-20 flex items-center justify-between relative">
           {/* Logo — fluid sizing from 320px up */}
-          <a href="#home" onClick={(e) => scrollToSection(e, '#home')} className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 group z-10 shrink-0">
+          <button onClick={() => scrollToSection('home')} className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 group z-10 shrink-0 outline-none">
             <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg sm:rounded-xl overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(0,255,255,0.6)] group-hover:shadow-[0_0_20px_rgba(0,255,255,0.9)] transition-shadow duration-300 border border-[rgba(0,255,255,0.3)]">
               <img src="/images/swiftops-logo.jpeg" alt="SwiftOps Logo" width="40" height="40" fetchPriority="high" decoding="async" className="w-full h-full object-contain" />
             </div>
@@ -150,40 +151,39 @@ function Navbar() {
                 Automation
               </span>
             </div>
-          </a>
+          </button>
 
           {/* Desktop nav — centered links (hidden below lg) */}
           <div className="hidden lg:flex items-center gap-6 xl:gap-8 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link, i) => (
-              <motion.a
+              <motion.button
                 key={link.name}
-                href={link.href}
-                onClick={(e) => scrollToSection(e, link.href)}
+                onClick={() => scrollToSection(link.id)}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 + (i * 0.08) }}
-                className={`relative transition-all duration-300 text-[12px] xl:text-[13px] font-semibold tracking-[0.1em] uppercase group py-2 whitespace-nowrap ${
-                  activeSection === link.href.replace('#', '') 
+                className={`relative transition-all duration-300 text-[12px] xl:text-[13px] font-semibold tracking-[0.1em] uppercase group py-2 whitespace-nowrap outline-none cursor-pointer ${
+                  activeSection === link.id
                     ? 'text-[#00ffff] drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]' 
                     : 'text-white/60 hover:text-[#00ffff] hover:drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]'
                 }`}
               >
                 {link.name}
                 <span className={`absolute bottom-0 left-0 h-[2px] bg-[#00ffff] transition-all duration-300 shadow-[0_0_10px_rgba(0,255,255,0.9)] ${
-                  activeSection === link.href.replace('#', '') ? 'w-full' : 'w-0 group-hover:w-full'
+                  activeSection === link.id ? 'w-full' : 'w-0 group-hover:w-full'
                 }`}></span>
-              </motion.a>
+              </motion.button>
             ))}
           </div>
 
           {/* Desktop CTA (hidden below lg) */}
           <div className="hidden lg:block z-10">
-            <motion.a
-              href="#contact"
-              onPointerDown={(e) => {
-                if ((e as any).isPrimary !== false) scrollToSection(e as any, '#contact');
+            <motion.button
+              onClick={() => {
+                const ct = document.getElementById('contact');
+                if (ct) ct.scrollIntoView({behavior: 'smooth', block: 'start'});
+                else window.location.href = '/contact';
               }}
-              onClick={(e) => scrollToSection(e, '#contact')}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.6 }}
@@ -193,7 +193,7 @@ function Navbar() {
             >
               <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#00ffff] to-[#0088ff] opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
               <span className="relative z-10 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)] group-hover:drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">Get Started</span>
-            </motion.a>
+            </motion.button>
           </div>
 
           {/* Hamburger — visible below lg */}
@@ -248,28 +248,27 @@ function Navbar() {
               {/* Nav Links — staggered entry */}
               <nav className="flex flex-col items-center gap-2 sm:gap-3 w-full max-w-sm">
                 {navLinks.map((link, i) => (
-                  <motion.a
+                  <motion.button
                     key={link.name}
-                    href={link.href}
-                    onClick={(e) => scrollToSection(e, link.href)}
+                    onClick={() => scrollToSection(link.id)}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ delay: 0.1 + (i * 0.06), duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    className={`w-full text-center py-4 sm:py-5 rounded-2xl text-base sm:text-lg font-bold tracking-[0.15em] uppercase transition-all duration-300 min-h-[56px] flex items-center justify-center touch-manipulation ${
-                      activeSection === link.href.replace('#', '') 
+                    className={`w-full text-center py-4 sm:py-5 rounded-2xl text-base sm:text-lg font-bold tracking-[0.15em] uppercase transition-all duration-300 min-h-[56px] flex items-center justify-center outline-none cursor-pointer touch-manipulation ${
+                      activeSection === link.id
                         ? 'bg-[rgba(0,255,255,0.12)] text-[#00ffff] border border-[rgba(0,255,255,0.3)] shadow-[0_0_25px_rgba(0,255,255,0.15)]' 
                         : 'text-white/60 hover:text-white active:bg-[rgba(0,255,255,0.08)] active:text-[#00ffff] border border-transparent'
                     }`}
                   >
                     {link.name}
-                    {activeSection === link.href.replace('#', '') && (
+                    {activeSection === link.id && (
                       <motion.div
                         layoutId="activeNavDot"
                         className="w-1.5 h-1.5 bg-[#00ffff] rounded-full ml-3 shadow-[0_0_10px_rgba(0,255,255,0.8)]"
                       />
                     )}
-                  </motion.a>
+                  </motion.button>
                 ))}
               </nav>
 
@@ -281,17 +280,19 @@ function Navbar() {
                 transition={{ delay: 0.5, duration: 0.4 }}
                 className="mt-8 sm:mt-10 w-full max-w-sm"
               >
-                <a
-                  href="#contact"
-                  onPointerDown={(e) => {
-                    if ((e as any).isPrimary !== false) scrollToSection(e as any, '#contact');
+                <button
+                  onClick={() => {
+                    const ct = document.getElementById('contact');
+                    if (ct) {
+                      ct.scrollIntoView({behavior: 'smooth', block: 'start'});
+                      setMobileOpen(false);
+                    } else window.location.href = '/contact';
                   }}
-                  onClick={(e) => scrollToSection(e, '#contact')}
-                  className="flex items-center justify-center w-full py-4 sm:py-5 text-sm sm:text-base font-bold text-white uppercase tracking-[0.15em] rounded-2xl bg-gradient-to-r from-[rgba(0,255,255,0.15)] to-[rgba(0,100,255,0.15)] border border-[rgba(0,255,255,0.5)] shadow-[0_0_20px_rgba(0,255,255,0.2)] active:shadow-[0_0_30px_rgba(0,255,255,0.5)] active:scale-[0.98] transition-all duration-300 min-h-[56px] touch-manipulation"
+                  className="flex items-center justify-center w-full py-4 sm:py-5 text-sm sm:text-base font-bold text-white uppercase tracking-[0.15em] rounded-2xl bg-gradient-to-r from-[rgba(0,255,255,0.15)] to-[rgba(0,100,255,0.15)] border border-[rgba(0,255,255,0.5)] shadow-[0_0_20px_rgba(0,255,255,0.2)] active:shadow-[0_0_30px_rgba(0,255,255,0.5)] active:scale-[0.98] transition-all duration-300 min-h-[56px] touch-manipulation outline-none cursor-pointer"
                 >
                   <span className="drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">Get Started</span>
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-                </a>
+                </button>
               </motion.div>
 
               {/* Bottom branding */}
@@ -382,17 +383,17 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-5">
             {/* Brand */}
-            <a href="#home" onClick={(e) => { e.preventDefault(); document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' }); }} className="flex items-center gap-3 group">
+            <button onClick={() => { document.getElementById('home')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="flex items-center gap-3 group outline-none cursor-pointer bg-transparent border-none p-0">
               <div className="w-8 h-8 rounded-lg overflow-hidden shadow-[0_0_8px_rgba(0,229,255,0.5)] group-hover:shadow-[0_0_15px_rgba(0,229,255,0.8)] transition-shadow duration-300">
                 <img src="/images/swiftops-logo.jpeg" alt="SwiftOps Logo" width="32" height="32" decoding="async" className="w-full h-full object-contain" loading="lazy" />
               </div>
               <span className="text-neutral-400 text-sm font-medium group-hover:text-[#00E5FF] transition-colors duration-300">SwiftOps Automation</span>
-            </a>
+            </button>
 
             {/* Links */}
             <div className="flex items-center gap-4 md:gap-6 text-neutral-600 text-xs">
-              <a href="#services" onClick={(e) => { e.preventDefault(); document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center">Services</a>
-              <a href="#contact" onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center">Contact</a>
+              <button onClick={() => { document.getElementById('services')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center outline-none cursor-pointer bg-transparent border-none p-0">Services</button>
+              <button onClick={() => { document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center outline-none cursor-pointer bg-transparent border-none p-0">Contact</button>
               <a href="https://automateze.com" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center">automateze.com</a>
             </div>
 
