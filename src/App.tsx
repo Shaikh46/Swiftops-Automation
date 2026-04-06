@@ -105,10 +105,10 @@ function Navbar() {
   ]
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault()
     const targetId = href.replace('#', '')
     const element = document.getElementById(targetId)
     if (element) {
+      e.preventDefault()
       element.scrollIntoView({ behavior: 'smooth' })
       setMobileOpen(false)
       
@@ -180,6 +180,9 @@ function Navbar() {
           <div className="hidden lg:block z-10">
             <motion.a
               href="#contact"
+              onPointerDown={(e) => {
+                if ((e as any).isPrimary !== false) scrollToSection(e as any, '#contact');
+              }}
               onClick={(e) => scrollToSection(e, '#contact')}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -280,6 +283,9 @@ function Navbar() {
               >
                 <a
                   href="#contact"
+                  onPointerDown={(e) => {
+                    if ((e as any).isPrimary !== false) scrollToSection(e as any, '#contact');
+                  }}
                   onClick={(e) => scrollToSection(e, '#contact')}
                   className="flex items-center justify-center w-full py-4 sm:py-5 text-sm sm:text-base font-bold text-white uppercase tracking-[0.15em] rounded-2xl bg-gradient-to-r from-[rgba(0,255,255,0.15)] to-[rgba(0,100,255,0.15)] border border-[rgba(0,255,255,0.5)] shadow-[0_0_20px_rgba(0,255,255,0.2)] active:shadow-[0_0_30px_rgba(0,255,255,0.5)] active:scale-[0.98] transition-all duration-300 min-h-[56px] touch-manipulation"
                 >

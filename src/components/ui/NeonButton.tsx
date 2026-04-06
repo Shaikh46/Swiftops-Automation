@@ -16,7 +16,6 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
   ...props 
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isClicked, setIsClicked] = useState(false);
   const [ripples, setRipples] = useState<{ x: number; y: number; id: number }[]>([]);
   const buttonRef = useRef<HTMLAnchorElement>(null);
   
@@ -54,23 +53,22 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
   };
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // Flash glow
-    setIsClicked(true);
-    setTimeout(() => setIsClicked(false), 300);
+    // 1. Non-blocking ripple effect for instant 0ms response
+    requestAnimationFrame(() => {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      const x = rect ? e.clientX - rect.left : 0;
+      const y = rect ? e.clientY - rect.top : 0;
+      setRipples((prev) => [...prev, { x, y, id: Date.now() }]);
+    });
 
-    // Handle ripple (cyan-purple ring expand)
-    const rect = buttonRef.current?.getBoundingClientRect();
-    const x = rect ? e.clientX - rect.left : 0;
-    const y = rect ? e.clientY - rect.top : 0;
-    setRipples((prev) => [...prev, { x, y, id: Date.now() }]);
-
-    // Handle smooth scroll
+    // 2. Fixed linking logic
     if (href.startsWith('#')) {
-      e.preventDefault();
       const targetId = href.substring(1);
       const targetElement = document.getElementById(targetId);
       
       if (targetElement) {
+        e.preventDefault(); // MUST be inside this if-block to allow normal linking fallback!
+        
         // Add highlight effect if scrolling to contact
         if (targetId === 'contact') {
           const contactGrid = targetElement.querySelector('.contact-grid-highlight-target');
@@ -114,7 +112,8 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
         transition-colors duration-300 ease-out
         hover:border-[#00f0ff]
         hover:text-white
-        ${isClicked ? 'shadow-[0_0_40px_rgba(0,240,255,0.8),inset_0_0_20px_rgba(0,240,255,0.5)] scale-[0.98]' : 'hover:shadow-[0_0_20px_rgba(0,240,255,0.4),inset_0_0_10px_rgba(0,240,255,0.2)]'}
+        hover:shadow-[0_0_20px_rgba(0,240,255,0.4),inset_0_0_10px_rgba(0,240,255,0.2)]
+        active:shadow-[0_0_40px_rgba(0,240,255,0.8),inset_0_0_20px_rgba(0,240,255,0.5)] active:scale-[0.98]
         ${className}
       `}
       style={{ willChange: 'transform, box-shadow', transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}

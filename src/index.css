@@ -14,6 +14,7 @@ html {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: none;
   text-size-adjust: 100%;
+  will-change: scroll-position;
 }
 
 body {
@@ -21,6 +22,13 @@ body {
   text-rendering: optimizeLegibility;
   font-family: 'Inter', sans-serif;
   touch-action: manipulation; /* PERF: Removes 300ms tap delay on mobile universally */
+}
+
+a, button, [role="button"] {
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+  will-change: transform, box-shadow, opacity;
+  transform: translateZ(0);
 }
 
 /* PERF: Only apply transitions where explicitly needed — no global wildcard */
