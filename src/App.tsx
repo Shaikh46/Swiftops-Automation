@@ -18,6 +18,7 @@ const ContactSection = lazy(() => import('./components/ContactSection').then(m =
 const StatsSection = lazy(() => import('./components/StatsSection').then(m => ({ default: m.StatsSection })))
 const WorkflowSection = lazy(() => import('./components/WorkflowSection').then(m => ({ default: m.WorkflowSection })))
 const CTASection = lazy(() => import('./components/CTASection').then(m => ({ default: m.CTASection })))
+const PricingSection = lazy(() => import('./components/PricingSection').then(m => ({ default: m.PricingSection })))
 
 // Minimal loading fallback for lazy sections
 const SectionFallback = () => (
@@ -67,7 +68,7 @@ function Navbar() {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           setScrolled(window.scrollY > 20)
-          const sections = ['home', 'services', 'workflow', 'about', 'contact']
+          const sections = ['home', 'services', 'pricing', 'automation', 'about', 'contact']
           const current = sections.find(section => {
             const element = document.getElementById(section)
             if (element) {
@@ -99,6 +100,7 @@ function Navbar() {
   const navLinks = [
     { name: 'Home', id: 'home' },
     { name: 'Services', id: 'services' },
+    { name: 'Pricing', id: 'pricing' },
     { name: 'Automation', id: 'automation' },
     { name: 'About', id: 'about' },
     { name: 'Contact', id: 'contact' },
@@ -351,6 +353,12 @@ function App() {
         <LazySection>
           <Suspense fallback={<SectionFallback />}>
             <ServicesSection />
+          </Suspense>
+        </LazySection>
+        
+        <LazySection>
+          <Suspense fallback={<SectionFallback />}>
+            <PricingSection />
           </Suspense>
         </LazySection>
         
