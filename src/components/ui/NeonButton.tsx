@@ -81,7 +81,7 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
         }
 
         targetElement.scrollIntoView({
-          behavior: 'smooth',
+          behavior: 'instant',
           block: 'start',
         });
       }

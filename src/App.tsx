@@ -11,6 +11,7 @@ const GlowTrail = lazy(() => import('./components/ui/GlowTrail').then(m => ({ de
 // PERF: Lazy load below-fold sections
 const AboutSection = lazy(() => import('./components/AboutSection').then(m => ({ default: m.AboutSection })))
 const ServicesSection = lazy(() => import('./components/ServicesSection').then(m => ({ default: m.ServicesSection })))
+const PricingSection = lazy(() => import('./components/PricingSection').then(m => ({ default: m.PricingSection })))
 const TestimonialsSection = lazy(() => import('./components/TestimonialsSection').then(m => ({ default: m.TestimonialsSection })))
 const FounderSection = lazy(() => import('./components/FounderSection').then(m => ({ default: m.FounderSection })))
 const ContactSection = lazy(() => import('./components/ContactSection').then(m => ({ default: m.ContactSection })))
@@ -67,7 +68,7 @@ function Navbar() {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           setScrolled(window.scrollY > 20)
-          const sections = ['home', 'services', 'workflow', 'about', 'contact']
+          const sections = ['home', 'services', 'automation', 'pricing', 'about', 'contact']
           const current = sections.find(section => {
             const element = document.getElementById(section)
             if (element) {
@@ -100,27 +101,22 @@ function Navbar() {
     { name: 'Home', id: 'home' },
     { name: 'Services', id: 'services' },
     { name: 'Automation', id: 'automation' },
+    { name: 'Pricing', id: 'pricing' },
     { name: 'About', id: 'about' },
     { name: 'Contact', id: 'contact' },
   ]
 
   const scrollToSection = (id: string) => {
-    if (id === 'contact') {
-      const contactSection = document.getElementById('contact');
-      if (contactSection) {
-        contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        contactSection.classList.add('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black', 'transition-all', 'duration-500');
-        setTimeout(() => contactSection.classList.remove('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black'), 1500);
-      } else {
-        window.location.href = '/contact';
-      }
-      setMobileOpen(false);
-      return;
-    }
-
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      element.scrollIntoView({ behavior: 'instant', block: 'start' });
+      
+      // Add highlight ring on contact section
+      if (id === 'contact') {
+        element.classList.add('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black', 'transition-all', 'duration-500');
+        setTimeout(() => element.classList.remove('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black'), 1500);
+      }
+      
       setMobileOpen(false);
     }
   }
@@ -178,12 +174,8 @@ function Navbar() {
 
           {/* Desktop CTA (hidden below lg) */}
           <div className="hidden lg:block z-10">
-            <motion.button
-              onClick={() => {
-                const ct = document.getElementById('contact');
-                if (ct) ct.scrollIntoView({behavior: 'smooth', block: 'start'});
-                else window.location.href = '/contact';
-              }}
+           <motion.button
+              onClick={() => scrollToSection('contact')}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.6 }}
@@ -281,13 +273,7 @@ function Navbar() {
                 className="mt-8 sm:mt-10 w-full max-w-sm"
               >
                 <button
-                  onClick={() => {
-                    const ct = document.getElementById('contact');
-                    if (ct) {
-                      ct.scrollIntoView({behavior: 'smooth', block: 'start'});
-                      setMobileOpen(false);
-                    } else window.location.href = '/contact';
-                  }}
+                  onClick={() => scrollToSection('contact')}
                   className="flex items-center justify-center w-full py-4 sm:py-5 text-sm sm:text-base font-bold text-white uppercase tracking-[0.15em] rounded-2xl bg-gradient-to-r from-[rgba(0,255,255,0.15)] to-[rgba(0,100,255,0.15)] border border-[rgba(0,255,255,0.5)] shadow-[0_0_20px_rgba(0,255,255,0.2)] active:shadow-[0_0_30px_rgba(0,255,255,0.5)] active:scale-[0.98] transition-all duration-300 min-h-[56px] touch-manipulation outline-none cursor-pointer"
                 >
                   <span className="drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">Get Started</span>
@@ -356,6 +342,12 @@ function App() {
         
         <LazySection>
           <Suspense fallback={<SectionFallback />}>
+            <PricingSection />
+          </Suspense>
+        </LazySection>
+        
+        <LazySection>
+          <Suspense fallback={<SectionFallback />}>
             <TestimonialsSection />
           </Suspense>
         </LazySection>
@@ -383,7 +375,7 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-5">
             {/* Brand */}
-            <button onClick={() => { document.getElementById('home')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="flex items-center gap-3 group outline-none cursor-pointer bg-transparent border-none p-0">
+            <button onClick={() => { document.getElementById('home')?.scrollIntoView({ behavior: 'instant', block: 'start' }); }} className="flex items-center gap-3 group outline-none cursor-pointer bg-transparent border-none p-0">
               <div className="w-8 h-8 rounded-lg overflow-hidden shadow-[0_0_8px_rgba(0,229,255,0.5)] group-hover:shadow-[0_0_15px_rgba(0,229,255,0.8)] transition-shadow duration-300">
                 <img src="/images/swiftops-logo.jpeg" alt="SwiftOps Logo" width="32" height="32" decoding="async" className="w-full h-full object-contain" loading="lazy" />
               </div>
@@ -392,8 +384,8 @@ function App() {
 
             {/* Links */}
             <div className="flex items-center gap-4 md:gap-6 text-neutral-600 text-xs">
-              <button onClick={() => { document.getElementById('services')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center outline-none cursor-pointer bg-transparent border-none p-0">Services</button>
-              <button onClick={() => { document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center outline-none cursor-pointer bg-transparent border-none p-0">Contact</button>
+              <button onClick={() => { document.getElementById('services')?.scrollIntoView({ behavior: 'instant', block: 'start' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center outline-none cursor-pointer bg-transparent border-none p-0">Services</button>
+              <button onClick={() => { document.getElementById('contact')?.scrollIntoView({ behavior: 'instant', block: 'start' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center outline-none cursor-pointer bg-transparent border-none p-0">Contact</button>
               <a href="https://automateze.com" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center">automateze.com</a>
             </div>
 
