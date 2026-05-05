@@ -24,20 +24,11 @@ export default defineConfig({
   build: {
     // PERF: No sourcemaps in production — halves output size
     sourcemap: false,
+    // PERF: Optimize chunk splitting for faster initial load
     rollupOptions: {
       plugins: [
         strip({ include: ['**/*.js', '**/*.ts', '**/*.jsx', '**/*.tsx'] })
       ],
-      output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'ui-vendor': ['framer-motion', 'lucide-react']
-        }
-      }
-    }
-  },
-    // PERF: Optimize chunk splitting for faster initial load
-    rollupOptions: {
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom'],
