@@ -2,10 +2,16 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { youwareVitePlugin } from "@youware/vite-plugin-react";
 import path from "path";
+import compression from 'vite-plugin-compression';
+import strip from '@rollup/plugin-strip';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [youwareVitePlugin(), react()],
+  plugins: [
+    youwareVitePlugin(), 
+    react(),
+    compression({ algorithm: 'gzip', ext: '.gz' }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -18,6 +24,18 @@ export default defineConfig({
   build: {
     // PERF: No sourcemaps in production — halves output size
     sourcemap: false,
+    rollupOptions: {
+      plugins: [
+        strip({ include: ['**/*.js', '**/*.ts', '**/*.jsx', '**/*.tsx'] })
+      ],
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'ui-vendor': ['framer-motion', 'lucide-react']
+        }
+      }
+    }
+  },
     // PERF: Optimize chunk splitting for faster initial load
     rollupOptions: {
       output: {

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Menu, X, ArrowRight, Bot, Zap, Workflow } from 'lucide-react'
 import { HeroSection } from './components/HeroSection'
+import { Robot3D } from './components/Robot3D'
 import { NeonButton } from './components/ui/NeonButton'
 
 // PERF: Lazy load GPU-intensive cursor effects — defer until after page is interactive
@@ -315,6 +316,7 @@ function App() {
         <Navbar />
 
         <HeroSection />
+        <Robot3D />
         
         <LazySection>
           <Suspense fallback={<SectionFallback />}>

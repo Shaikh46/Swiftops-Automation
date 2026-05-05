@@ -1,3 +1,12 @@
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -278,6 +287,24 @@ a, button, [role="button"] {
   animation: buttonPulse 4s ease-in-out infinite;
   will-change: transform, box-shadow;
 }
+
+.card, section {
+  contain: layout style paint;
+}
+
+img, video {
+  aspect-ratio: auto;
+  width: auto;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .robot-3d-container {
+    transform: scale(1.1);
+    margin: 20px 0;
+  }
+}
+
 
 .glass-card {
   background: rgba(255, 255, 255, 0.05);

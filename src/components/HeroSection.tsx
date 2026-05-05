@@ -101,33 +101,21 @@ export function HeroSection() {
               className="flex flex-col items-start gap-4"
             >
               <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                <button
-                  onClick={() => {
-                    const section = document.getElementById('services');
-                    if (section) {
-                      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    } else {
-                      window.location.href = '/contact';
-                    }
-                  }}
+                <a
+                  href="#contact"
                   className="relative inline-flex items-center justify-center gap-2 px-8 py-4 lg:px-10 rounded-[50px] font-bold text-base min-h-[56px] bg-white/5 backdrop-blur-[20px] border border-[#00f0ff]/20 text-[#00f0ff] transition-colors duration-300 hover:border-[#00f0ff] hover:text-white pulse-4s w-full sm:w-auto outline-none cursor-pointer"
                 >
                   Start Your Journey →
-                </button>
+                </a>
                 
                 <div className="relative group w-full sm:w-auto">
-                  <button 
-                    onClick={() => {
-                      document.getElementById('services')?.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                      });
-                    }}
+                  <a 
+                    href="#services"
                     className="relative inline-flex items-center justify-center px-8 py-4 lg:px-10 rounded-[50px] font-bold text-base min-h-[56px] !bg-transparent border border-[#00fff7]/30 hover:bg-[#00fff7]/10 text-[#00f0ff] transition-colors duration-300 w-full sm:w-auto outline-none cursor-pointer"
                   >
                     <PlayCircle className="w-5 h-5 mr-2" />
                     View Services
-                  </button>
+                  </a>
                   {/* Tooltip */}
                   <span className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs bg-black/90 text-white px-3 py-1.5 rounded-md whitespace-nowrap border border-white/10 pointer-events-none before:content-[''] before:absolute before:-bottom-1 before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-black/90 z-20">
                     See what we automate →
@@ -163,7 +151,7 @@ export function HeroSection() {
           </div>
 
           {/* RIGHT: 3D Robot */}
-          <div className="flex-1 w-full order-2 flex justify-center items-center h-[400px] md:h-[500px] lg:h-[800px] relative pointer-events-auto">
+          <div className="hidden md:flex flex-1 w-full order-2 justify-center items-center h-[400px] md:h-[500px] lg:h-[800px] relative pointer-events-auto">
             <div className="w-full h-full relative float-robot origin-center">
               {mountSpline && (
                 <Suspense fallback={null}>
