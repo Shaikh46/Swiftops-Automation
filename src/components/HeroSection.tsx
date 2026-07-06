@@ -1,39 +1,11 @@
-import { Suspense, lazy, useEffect, useState } from "react";
-const SplineScene = lazy(() => import("@/components/ui/splite").then(m => ({ default: m.SplineScene })));
+import { Suspense, lazy } from "react";
+const Abstract3D = lazy(() => import("@/components/Abstract3D"));
 import { Spotlight } from "@/components/ui/spotlight";
 import { motion } from "framer-motion";
 import { ArrowRight, Zap, PlayCircle } from "lucide-react";
 import { NeonButton } from "./ui/NeonButton";
 
 export function HeroSection() {
-  const [mountSpline, setMountSpline] = useState(false);
-
-  useEffect(() => {
-    // PERF: On mobile, radically delay the heavy Spline scene to ensure PageSpeed/Lighthouse passes the TBT window
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
-    
-    if (!isMobile) {
-      const timer = setTimeout(() => setMountSpline(true), 800);
-      return () => clearTimeout(timer);
-    } else {
-      let mounted = false;
-      const mount = () => {
-        if (!mounted) {
-           mounted = true;
-           setMountSpline(true);
-        }
-      };
-      const timer = setTimeout(mount, 8000);
-      window.addEventListener('touchstart', mount, { once: true, passive: true });
-      window.addEventListener('scroll', mount, { once: true, passive: true });
-      
-      return () => {
-        clearTimeout(timer);
-        window.removeEventListener('touchstart', mount);
-        window.removeEventListener('scroll', mount);
-      };
-    }
-  }, []);
 
   const headline = "Automate The Impossible".split(" ");
 
@@ -103,7 +75,7 @@ export function HeroSection() {
               <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                 <a
                   href="#contact"
-                  className="relative inline-flex items-center justify-center gap-2 px-8 py-4 lg:px-10 rounded-[50px] font-bold text-base min-h-[56px] bg-white/5 backdrop-blur-[20px] border border-[#00f0ff]/20 text-[#00f0ff] transition-colors duration-300 hover:border-[#00f0ff] hover:text-white pulse-4s w-full sm:w-auto outline-none cursor-pointer"
+                  className="relative pointer-events-auto z-10 inline-flex items-center justify-center gap-2 px-8 py-4 lg:px-10 rounded-[50px] font-bold text-base min-h-[56px] bg-white/5 backdrop-blur-[20px] border border-[#00f0ff]/20 text-[#00f0ff] transition-colors duration-300 hover:border-[#00f0ff] hover:text-white pulse-4s w-full sm:w-auto outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff] focus-visible:ring-offset-2 focus-visible:ring-offset-black cursor-pointer"
                 >
                   Start Your Journey →
                 </a>
@@ -111,7 +83,7 @@ export function HeroSection() {
                 <div className="relative group w-full sm:w-auto">
                   <a 
                     href="#services"
-                    className="relative inline-flex items-center justify-center px-8 py-4 lg:px-10 rounded-[50px] font-bold text-base min-h-[56px] !bg-transparent border border-[#00fff7]/30 hover:bg-[#00fff7]/10 text-[#00f0ff] transition-colors duration-300 w-full sm:w-auto outline-none cursor-pointer"
+                    className="relative pointer-events-auto z-10 inline-flex items-center justify-center px-8 py-4 lg:px-10 rounded-[50px] font-bold text-base min-h-[56px] !bg-transparent border border-[#00fff7]/30 hover:bg-[#00fff7]/10 text-[#00f0ff] transition-colors duration-300 w-full sm:w-auto outline-none focus-visible:ring-2 focus-visible:ring-[#00fff7] focus-visible:ring-offset-2 focus-visible:ring-offset-black cursor-pointer"
                   >
                     <PlayCircle className="w-5 h-5 mr-2" />
                     View Services
@@ -150,19 +122,12 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* RIGHT: 3D Robot */}
+          {/* RIGHT: 3D Visual */}
           <div className="hidden md:flex flex-1 w-full order-2 justify-center items-center h-[400px] md:h-[500px] lg:h-[800px] relative pointer-events-auto">
-            <div className="w-full h-full relative float-robot origin-center">
-              {mountSpline && (
-                <Suspense fallback={null}>
-                  <SplineScene
-                    scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-                    className="w-full h-full scale-110 lg:scale-125"
-                  />
-                </Suspense>
-              )}
-              {/* Spline logo cover */}
-              <div className="absolute bottom-0 right-0 pointer-events-none w-32 h-12 bg-black/60 backdrop-blur-md"></div>
+            <div className="w-full h-full relative origin-center">
+              <Suspense fallback={null}>
+                <Abstract3D />
+              </Suspense>
             </div>
             {/* Atmospheric Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] lg:w-[600px] h-[300px] lg:h-[600px] bg-[#00fff7]/10 rounded-full blur-[80px] lg:blur-[120px] pointer-events-none -z-10"></div>

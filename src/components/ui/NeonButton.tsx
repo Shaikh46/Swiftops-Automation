@@ -114,6 +114,7 @@ export const NeonButton: React.FC<NeonButtonProps> = ({
         hover:text-white
         hover:shadow-[0_0_20px_rgba(0,240,255,0.4),inset_0_0_10px_rgba(0,240,255,0.2)]
         active:shadow-[0_0_40px_rgba(0,240,255,0.8),inset_0_0_20px_rgba(0,240,255,0.5)] active:scale-[0.98]
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff] focus-visible:ring-offset-2 focus-visible:ring-offset-black
         ${className}
       `}
       style={{ willChange: 'transform, box-shadow', transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}

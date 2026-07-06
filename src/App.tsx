@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Menu, X, ArrowRight, Bot, Zap, Workflow } from 'lucide-react'
 import { HeroSection } from './components/HeroSection'
-import { Robot3D } from './components/Robot3D'
 import { NeonButton } from './components/ui/NeonButton'
 
 // PERF: Lazy load GPU-intensive cursor effects — defer until after page is interactive
@@ -29,27 +28,24 @@ const SectionFallback = () => (
 )
 
 // PERF: True Lazy Loading wrapper. Fetch chunks only when scrolled into view.
-function LazySection({ children }: { children: React.ReactNode }) {
+function LazySection({ children, id }: { children: React.ReactNode; id?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0, margin: "400px 0px" });
-  return <div ref={ref}>{isInView ? children : <SectionFallback />}</div>;
+  return <div ref={ref} id={id ? `lazy-${id}` : undefined}>{isInView ? children : <SectionFallback />}</div>;
 }
 
 // PERF: Delayed wrapper for heavy WebGL/Mouse interactions to unblock initial load
 function InteractiveOnly({ children }: { children: React.ReactNode }) {
   const [interacted, setInteracted] = useState(false);
   useEffect(() => {
-    const enable = () => setInteracted(true);
-    window.addEventListener('scroll', enable, { once: true, passive: true });
-    window.addEventListener('mousemove', enable, { once: true, passive: true });
-    window.addEventListener('touchstart', enable, { once: true, passive: true });
-    const timer = setTimeout(enable, 6000);
-    return () => {
-      window.removeEventListener('scroll', enable);
-      window.removeEventListener('mousemove', enable);
-      window.removeEventListener('touchstart', enable);
-      clearTimeout(timer);
-    };
+    // Wait for initial paint & hydration to settle, then load the heavy effects when browser is idle
+    const timer = setTimeout(() => {
+      const requestIdle = window.requestIdleCallback || ((cb: any) => setTimeout(cb, 100));
+      requestIdle(() => {
+        setInteracted(true);
+      });
+    }, 2500);
+    return () => clearTimeout(timer);
   }, []);
   if (!interacted) return null;
   return <>{children}</>;
@@ -108,14 +104,15 @@ function Navbar() {
   ]
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
+    const element = document.getElementById(id) || document.getElementById(`lazy-${id}`);
     if (element) {
-      element.scrollIntoView({ behavior: 'instant', block: 'start' });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       
       // Add highlight ring on contact section
       if (id === 'contact') {
-        element.classList.add('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black', 'transition-all', 'duration-500');
-        setTimeout(() => element.classList.remove('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black'), 1500);
+        const contactEl = document.getElementById('contact') || element;
+        contactEl.classList.add('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black', 'transition-all', 'duration-500');
+        setTimeout(() => contactEl.classList.remove('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black'), 1500);
       }
       
       setMobileOpen(false);
@@ -136,9 +133,9 @@ function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 lg:h-20 flex items-center justify-between relative">
           {/* Logo — fluid sizing from 320px up */}
-          <button onClick={() => scrollToSection('home')} className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 group z-10 shrink-0 outline-none">
+          <button onClick={() => scrollToSection('home')} className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 group z-10 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-[#00ffff] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-lg">
             <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg sm:rounded-xl overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(0,255,255,0.6)] group-hover:shadow-[0_0_20px_rgba(0,255,255,0.9)] transition-shadow duration-300 border border-[rgba(0,255,255,0.3)]">
-              <img src="/images/swiftops-logo.jpeg" alt="SwiftOps Logo" width="40" height="40" fetchPriority="high" decoding="async" className="w-full h-full object-contain" />
+              <img src="/images/swiftops-logo.webp" alt="SwiftOps Logo" width="40" height="40" decoding="async" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
               <span className="text-[#00ffff] font-bold tracking-[0.08em] sm:tracking-[0.1em] lg:tracking-[0.15em] text-[13px] sm:text-sm lg:text-base uppercase leading-tight drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">
@@ -159,7 +156,7 @@ function Navbar() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 + (i * 0.08) }}
-                className={`relative transition-all duration-300 text-[12px] xl:text-[13px] font-semibold tracking-[0.1em] uppercase group py-2 whitespace-nowrap outline-none cursor-pointer ${
+                className={`relative transition-all duration-300 text-[12px] xl:text-[13px] font-semibold tracking-[0.1em] uppercase group py-2 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-[#00ffff] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1 cursor-pointer ${
                   activeSection === link.id
                     ? 'text-[#00ffff] drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]' 
                     : 'text-white/60 hover:text-[#00ffff] hover:drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]'
@@ -182,7 +179,7 @@ function Navbar() {
               transition={{ duration: 0.5, delay: 0.6 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="relative inline-flex items-center justify-center px-5 xl:px-6 py-2 xl:py-2.5 text-xs xl:text-sm font-bold text-white uppercase tracking-wider overflow-hidden rounded-full group bg-gradient-to-r from-[rgba(0,255,255,0.1)] to-[rgba(0,150,255,0.1)] border border-[rgba(0,255,255,0.5)] shadow-[0_0_15px_rgba(0,255,255,0.3)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:border-[#00ffff] transition-all duration-300"
+              className="relative inline-flex items-center justify-center px-5 xl:px-6 py-2 xl:py-2.5 text-xs xl:text-sm font-bold text-white uppercase tracking-wider overflow-hidden rounded-full group bg-gradient-to-r from-[rgba(0,255,255,0.1)] to-[rgba(0,150,255,0.1)] border border-[rgba(0,255,255,0.5)] shadow-[0_0_15px_rgba(0,255,255,0.3)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:border-[#00ffff] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00ffff] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
               <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#00ffff] to-[#0088ff] opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
               <span className="relative z-10 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)] group-hover:drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">Get Started</span>
@@ -191,7 +188,7 @@ function Navbar() {
 
           {/* Hamburger — visible below lg */}
           <button
-            className="lg:hidden relative w-11 h-11 flex items-center justify-center rounded-xl border border-[rgba(0,255,255,0.3)] bg-[rgba(0,255,255,0.05)] text-[#00ffff] active:bg-[rgba(0,255,255,0.15)] active:scale-95 transition-all duration-200 z-[10000] touch-manipulation"
+            className="lg:hidden relative w-11 h-11 flex items-center justify-center rounded-xl border border-[rgba(0,255,255,0.3)] bg-[rgba(0,255,255,0.05)] text-[#00ffff] active:bg-[rgba(0,255,255,0.15)] active:scale-95 transition-all duration-200 z-[10000] touch-manipulation focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00ffff] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
@@ -248,7 +245,7 @@ function Navbar() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ delay: 0.1 + (i * 0.06), duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    className={`w-full text-center py-4 sm:py-5 rounded-2xl text-base sm:text-lg font-bold tracking-[0.15em] uppercase transition-all duration-300 min-h-[56px] flex items-center justify-center outline-none cursor-pointer touch-manipulation ${
+                    className={`w-full text-center py-4 sm:py-5 rounded-2xl text-base sm:text-lg font-bold tracking-[0.15em] uppercase transition-all duration-300 min-h-[56px] flex items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-[#00ffff] focus-visible:ring-offset-2 focus-visible:ring-offset-black cursor-pointer touch-manipulation ${
                       activeSection === link.id
                         ? 'bg-[rgba(0,255,255,0.12)] text-[#00ffff] border border-[rgba(0,255,255,0.3)] shadow-[0_0_25px_rgba(0,255,255,0.15)]' 
                         : 'text-white/60 hover:text-white active:bg-[rgba(0,255,255,0.08)] active:text-[#00ffff] border border-transparent'
@@ -275,7 +272,7 @@ function Navbar() {
               >
                 <button
                   onClick={() => scrollToSection('contact')}
-                  className="flex items-center justify-center w-full py-4 sm:py-5 text-sm sm:text-base font-bold text-white uppercase tracking-[0.15em] rounded-2xl bg-gradient-to-r from-[rgba(0,255,255,0.15)] to-[rgba(0,100,255,0.15)] border border-[rgba(0,255,255,0.5)] shadow-[0_0_20px_rgba(0,255,255,0.2)] active:shadow-[0_0_30px_rgba(0,255,255,0.5)] active:scale-[0.98] transition-all duration-300 min-h-[56px] touch-manipulation outline-none cursor-pointer"
+                  className="flex items-center justify-center w-full py-4 sm:py-5 text-sm sm:text-base font-bold text-white uppercase tracking-[0.15em] rounded-2xl bg-gradient-to-r from-[rgba(0,255,255,0.15)] to-[rgba(0,100,255,0.15)] border border-[rgba(0,255,255,0.5)] shadow-[0_0_20px_rgba(0,255,255,0.2)] active:shadow-[0_0_30px_rgba(0,255,255,0.5)] active:scale-[0.98] transition-all duration-300 min-h-[56px] touch-manipulation outline-none focus-visible:ring-2 focus-visible:ring-[#00ffff] focus-visible:ring-offset-2 focus-visible:ring-offset-black cursor-pointer"
                 >
                   <span className="drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">Get Started</span>
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
@@ -300,6 +297,48 @@ function Navbar() {
 }
 
 function App() {
+  // Global smooth scrolling handler for lazy-loaded sections
+  useEffect(() => {
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a');
+      if (anchor && anchor.hash && anchor.hash.startsWith('#')) {
+        const id = anchor.hash.slice(1);
+        const element = document.getElementById(id) || document.getElementById(`lazy-${id}`);
+        if (element) {
+          e.preventDefault();
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          
+          // Update URL hash without reload
+          window.history.pushState(null, '', anchor.hash);
+          
+          // Trigger form highlight on contact section
+          if (id === 'contact') {
+            const contactEl = document.getElementById('contact') || element;
+            contactEl.classList.add('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black', 'transition-all', 'duration-500');
+            setTimeout(() => {
+              contactEl.classList.remove('ring-2', 'ring-[#00ffff]', 'ring-offset-4', 'ring-offset-black');
+            }, 1500);
+          }
+        }
+      }
+    };
+
+    // Scroll to initial hash if loaded directly
+    if (window.location.hash) {
+      const id = window.location.hash.slice(1);
+      setTimeout(() => {
+        const element = document.getElementById(id) || document.getElementById(`lazy-${id}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 500);
+    }
+
+    document.addEventListener('click', handleAnchorClick);
+    return () => document.removeEventListener('click', handleAnchorClick);
+  }, []);
+
   return (
     <>
       <motion.div
@@ -316,57 +355,56 @@ function App() {
         <Navbar />
 
         <HeroSection />
-        <Robot3D />
         
-        <LazySection>
+        <LazySection id="about">
           <Suspense fallback={<SectionFallback />}>
             <AboutSection />
           </Suspense>
         </LazySection>
         
-        <LazySection>
+        <LazySection id="stats">
           <Suspense fallback={<SectionFallback />}>
             <StatsSection />
           </Suspense>
         </LazySection>
         
-        <LazySection>
+        <LazySection id="automation">
           <Suspense fallback={<SectionFallback />}>
             <WorkflowSection />
           </Suspense>
         </LazySection>
         
-        <LazySection>
+        <LazySection id="services">
           <Suspense fallback={<SectionFallback />}>
             <ServicesSection />
           </Suspense>
         </LazySection>
         
-        <LazySection>
+        <LazySection id="pricing">
           <Suspense fallback={<SectionFallback />}>
             <PricingSection />
           </Suspense>
         </LazySection>
         
-        <LazySection>
+        <LazySection id="testimonials">
           <Suspense fallback={<SectionFallback />}>
             <TestimonialsSection />
           </Suspense>
         </LazySection>
         
-        <LazySection>
+        <LazySection id="founder">
           <Suspense fallback={<SectionFallback />}>
             <FounderSection />
           </Suspense>
         </LazySection>
         
-        <LazySection>
+        <LazySection id="cta">
           <Suspense fallback={<SectionFallback />}>
             <CTASection />
           </Suspense>
         </LazySection>
         
-        <LazySection>
+        <LazySection id="contact">
           <Suspense fallback={<SectionFallback />}>
             <ContactSection />
           </Suspense>
@@ -377,18 +415,18 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-5">
             {/* Brand */}
-            <button onClick={() => { document.getElementById('home')?.scrollIntoView({ behavior: 'instant', block: 'start' }); }} className="flex items-center gap-3 group outline-none cursor-pointer bg-transparent border-none p-0">
+            <button onClick={() => { document.getElementById('home')?.scrollIntoView({ behavior: 'instant', block: 'start' }); }} className="flex items-center gap-3 group outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-lg px-2 py-1 cursor-pointer bg-transparent border-none p-0">
               <div className="w-8 h-8 rounded-lg overflow-hidden shadow-[0_0_8px_rgba(0,229,255,0.5)] group-hover:shadow-[0_0_15px_rgba(0,229,255,0.8)] transition-shadow duration-300">
-                <img src="/images/swiftops-logo.jpeg" alt="SwiftOps Logo" width="32" height="32" decoding="async" className="w-full h-full object-contain" loading="lazy" />
+                <img src="/images/swiftops-logo.webp" alt="SwiftOps Logo" width="32" height="32" decoding="async" className="w-full h-full object-contain" loading="lazy" />
               </div>
               <span className="text-neutral-400 text-sm font-medium group-hover:text-[#00E5FF] transition-colors duration-300">SwiftOps Automation</span>
             </button>
 
             {/* Links */}
             <div className="flex items-center gap-4 md:gap-6 text-neutral-600 text-xs">
-              <button onClick={() => { document.getElementById('services')?.scrollIntoView({ behavior: 'instant', block: 'start' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center outline-none cursor-pointer bg-transparent border-none p-0">Services</button>
-              <button onClick={() => { document.getElementById('contact')?.scrollIntoView({ behavior: 'instant', block: 'start' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center outline-none cursor-pointer bg-transparent border-none p-0">Contact</button>
-              <a href="https://automateze.com" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center">automateze.com</a>
+              <button onClick={() => { document.getElementById('services')?.scrollIntoView({ behavior: 'instant', block: 'start' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1 cursor-pointer bg-transparent border-none p-0">Services</button>
+              <button onClick={() => { document.getElementById('contact')?.scrollIntoView({ behavior: 'instant', block: 'start' }); }} className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1 cursor-pointer bg-transparent border-none p-0">Contact</button>
+              <a href="https://automateze.com" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-400 transition-colors min-h-[44px] flex items-center focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1">automateze.com</a>
             </div>
 
             {/* Status */}

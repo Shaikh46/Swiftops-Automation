@@ -9,14 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@splinetool/react-spline": "^4.1.0",
-    "@splinetool/runtime": "^1.12.90",
     "clsx": "^2.1.1",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.533.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^3.5.0",
+    "three": "^0.185.1",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
@@ -24,6 +23,7 @@
     "@types/node": "^24.0.14",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
+    "@types/three": "^0.185.0",
     "@vitejs/plugin-react": "^4.7.0",
     "@youware/vite-plugin-react": "^1.0.3",
     "autoprefixer": "^10.4.21",

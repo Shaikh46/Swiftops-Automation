@@ -169,6 +169,7 @@ export function ContactSection() {
                     bg-white/[0.02] border border-white/5 backdrop-blur-sm
                     transition-all duration-500 ease-out
                     hover:-translate-y-1 hover:bg-white/[0.04] hover:border-white/10
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff] focus-visible:ring-offset-2 focus-visible:ring-offset-black
                     ${card.containerGlow}
                     ${card.id === 'email' ? 'sm:col-span-2' : ''}
                   `}
@@ -227,7 +228,7 @@ export function ContactSection() {
                           required
                           onFocus={() => setFocusedField(field)}
                           onBlur={() => setFocusedField(null)}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:bg-white/10 transition-all duration-300 min-h-[52px] text-base"
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:border-[#00f0ff]/50 focus:ring-1 focus:ring-[#00f0ff]/30 focus:bg-white/10 transition-all duration-300 min-h-[52px] text-base"
                         />
                         {/* AI Focus Glow Underline */}
                         <div className={`absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-[#00f0ff] to-[#c300ff] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${focusedField === field ? 'w-full shadow-[0_0_15px_rgba(0,240,255,0.5)]' : 'w-0'}`} />
@@ -251,7 +252,7 @@ export function ContactSection() {
                         required
                         onFocus={() => setFocusedField('Message')}
                         onBlur={() => setFocusedField(null)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:bg-white/10 transition-all duration-300 resize-none"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:border-[#00f0ff]/50 focus:ring-1 focus:ring-[#00f0ff]/30 focus:bg-white/10 transition-all duration-300 resize-none"
                       />
                       <div className={`absolute bottom-1 left-0 h-[2px] bg-gradient-to-r from-[#00f0ff] to-[#c300ff] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${focusedField === 'Message' ? 'w-full shadow-[0_0_15px_rgba(0,240,255,0.5)]' : 'w-0'}`} />
                     </div>
@@ -260,7 +261,7 @@ export function ContactSection() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="relative w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base bg-[#00f0ff]/10 border border-[#00f0ff]/40 text-[#00f0ff] transition-all duration-300 hover:bg-[#00f0ff]/20 hover:shadow-[0_0_30px_rgba(0,240,255,0.3)] min-h-[52px] overflow-hidden group"
+                    className="relative w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base bg-[#00f0ff]/10 border border-[#00f0ff]/40 text-[#00f0ff] transition-all duration-300 hover:bg-[#00f0ff]/20 hover:shadow-[0_0_30px_rgba(0,240,255,0.3)] min-h-[52px] overflow-hidden group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                   >
                     {isSubmitting ? (
                       <motion.div

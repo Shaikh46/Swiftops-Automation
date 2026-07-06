@@ -169,7 +169,7 @@ export function PricingSection() {
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center justify-center w-full px-6 py-3 md:py-4 text-sm md:text-base font-bold text-white bg-gradient-to-r from-[#0066ff] to-[#0099ff] rounded-xl hover:shadow-[0_0_20px_rgba(0,102,255,0.5)] transition-all duration-300 group/btn"
+                  className="inline-flex items-center justify-center w-full px-6 py-3 md:py-4 text-sm md:text-base font-bold text-white bg-gradient-to-r from-[#0066ff] to-[#0099ff] rounded-xl hover:shadow-[0_0_20px_rgba(0,102,255,0.5)] transition-all duration-300 group/btn focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0066ff] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                 >
                   <span>Get Quote</span>
                   <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />

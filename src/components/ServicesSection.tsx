@@ -439,7 +439,15 @@ export function ServicesSection() {
                 transition: { duration: 0.4, ease: "easeOut" }
               }}
               onClick={() => setSelectedService(service)}
-              className="group relative bg-[rgba(10,18,30,0.65)] backdrop-blur-lg border border-white/[0.08] rounded-2xl sm:rounded-[26px] p-5 sm:p-6 lg:p-8 overflow-hidden transition-all duration-500 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_50px_-10px_rgba(0,229,255,0.15)] hover:border-[#00E5FF]/50 flex flex-col h-full transform-gpu cursor-pointer"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setSelectedService(service);
+                }
+              }}
+              tabIndex={0}
+              role="button"
+              className="group relative bg-[rgba(10,18,30,0.65)] backdrop-blur-lg border border-white/[0.08] rounded-2xl sm:rounded-[26px] p-5 sm:p-6 lg:p-8 overflow-hidden transition-all duration-500 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_50px_-10px_rgba(0,229,255,0.15)] hover:border-[#00E5FF]/50 flex flex-col h-full transform-gpu cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               style={{ transform: 'translateZ(0)' }}
             >
               {/* Light Sweep Animation on Hover */}
@@ -513,7 +521,7 @@ export function ServicesSection() {
               {/* Close Button */}
               <button
                 onClick={() => setSelectedService(null)}
-                className="absolute top-6 right-6 z-50 w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#00E5FF]/20 hover:border-[#00E5FF]/50 hover:text-[#00E5FF] hover:shadow-[0_0_15px_rgba(0,229,255,0.3)] transition-all duration-300 group"
+                className="absolute top-6 right-6 z-50 w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#00E5FF]/20 hover:border-[#00E5FF]/50 hover:text-[#00E5FF] hover:shadow-[0_0_15px_rgba(0,229,255,0.3)] transition-all duration-300 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
                 <X className="w-5 h-5 text-white/60 group-hover:text-[#00E5FF] transition-colors" />
               </button>

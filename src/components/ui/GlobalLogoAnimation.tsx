@@ -34,7 +34,7 @@ export function GlobalLogoAnimation() {
         <div className="swiftops-glow-ring absolute top-1/2 left-1/2 w-[240px] h-[240px] -mt-[120px] -ml-[120px] rounded-full border-2 border-[#00E5FF]/80 shadow-[0_0_30px_rgba(0,229,255,0.6),inset_0_0_30px_rgba(0,229,255,0.6)] opacity-0 preserve-3d md:w-[240px] md:h-[240px] max-md:w-[180px] max-md:h-[180px] max-md:-mt-[90px] max-md:-ml-[90px]" style={{ willChange: 'transform, opacity', transform: 'translateZ(0)' }}></div>
         
         <img 
-          src="/images/swiftops-logo.jpeg" 
+          src="/images/swiftops-logo.webp" 
           className="swiftops-logo relative w-[120px] h-[120px] rounded-[24px] object-contain shadow-[0_0_25px_rgba(0,229,255,0.5)] z-[2] opacity-0 preserve-3d max-md:w-[90px] max-md:h-[90px]" 
           alt="SwiftOps Logo" 
           loading="lazy"

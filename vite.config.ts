@@ -33,7 +33,7 @@ export default defineConfig({
         manualChunks: {
           'vendor-react': ['react', 'react-dom'],
           'vendor-motion': ['framer-motion'],
-          'vendor-spline': ['@splinetool/react-spline', '@splinetool/runtime'],
+          'vendor-three': ['three'],
           'vendor-icons': ['lucide-react'],
         },
       },
