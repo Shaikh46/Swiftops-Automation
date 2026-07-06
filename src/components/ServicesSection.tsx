@@ -1,42 +1,46 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Bot, MessageSquare, Mail, Workflow, Globe, Smartphone, CheckCircle2, X } from 'lucide-react'
+import { usePerformanceConfig } from '@/lib/performance'
+
 
 // --- Custom Animations for Cards & Modal ---
 
-const AIAgentsAnimation = ({ isHovered = false }: { isHovered?: boolean }) => (
+const AIAgentsAnimation = ({ isHovered = false, shouldAnimate = true }: { isHovered?: boolean, shouldAnimate?: boolean }) => (
   <div className="relative w-full h-full flex items-center justify-center perspective-1000">
     {/* Particle field */}
-    <div className="absolute inset-0 overflow-hidden">
-      {[...Array(10)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 bg-[#00E5FF]/40 rounded-full"
-          animate={{
-            y: [Math.random() * 200 - 100, Math.random() * 200 - 100],
-            x: [Math.random() * 200 - 100, Math.random() * 200 - 100],
-            opacity: [0, 1, 0],
-          }}
-          transition={{ duration: (isHovered ? 1.5 : 3) + Math.random() * 2, repeat: Infinity, ease: "linear" }}
-        />
-      ))}
-    </div>
+    {shouldAnimate && (
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(10)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-[#00E5FF]/40 rounded-full"
+            animate={{
+              y: [Math.random() * 200 - 100, Math.random() * 200 - 100],
+              x: [Math.random() * 200 - 100, Math.random() * 200 - 100],
+              opacity: [0, 1, 0],
+            }}
+            transition={{ duration: (isHovered ? 1.5 : 3) + Math.random() * 2, repeat: Infinity, ease: "linear" }}
+          />
+        ))}
+      </div>
+    )}
     
     {/* Neural Sphere */}
     <motion.div
-      animate={{ rotateY: 360, rotateX: 360 }}
+      animate={shouldAnimate ? { rotateY: 360, rotateX: 360 } : {}}
       transition={{ duration: isHovered ? 10 : 20, repeat: Infinity, ease: "linear" }}
       className="relative w-24 h-24 sm:w-32 sm:h-32 transform-style-3d"
     >
       {/* Core */}
-      <div className="absolute inset-0 m-auto w-10 h-10 sm:w-12 sm:h-12 bg-[#00E5FF] rounded-full blur-[20px] opacity-50 animate-pulse"></div>
+      <div className={`absolute inset-0 m-auto w-10 h-10 sm:w-12 sm:h-12 bg-[#00E5FF] rounded-full blur-[20px] opacity-50 ${shouldAnimate ? 'animate-pulse' : ''}`}></div>
       <div className="absolute inset-0 m-auto w-6 h-6 sm:w-8 sm:h-8 bg-white rounded-full shadow-[0_0_30px_#00E5FF]"></div>
       
       {/* Orbits & Nodes */}
       {[0, 1, 2].map((orbit) => (
         <div key={orbit} className="absolute inset-0 border border-[#00E5FF]/30 rounded-full" style={{ transform: `rotateX(${orbit * 60}deg) rotateY(${orbit * 60}deg)` }}>
           <motion.div
-            animate={{ rotateZ: 360 }}
+            animate={shouldAnimate ? { rotateZ: 360 } : {}}
             transition={{ duration: (isHovered ? 2 : 4) + orbit, repeat: Infinity, ease: "linear" }}
             className="w-full h-full relative"
           >
@@ -48,94 +52,105 @@ const AIAgentsAnimation = ({ isHovered = false }: { isHovered?: boolean }) => (
   </div>
 )
 
-const AIChatbotsAnimation = ({ isHovered = false }: { isHovered?: boolean }) => (
+const AIChatbotsAnimation = ({ isHovered = false, shouldAnimate = true }: { isHovered?: boolean, shouldAnimate?: boolean }) => (
   <div className="relative w-full h-full flex flex-col items-center justify-center p-4">
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+    <div
       className="w-full max-w-[240px] sm:max-w-sm bg-[#0a121e]/80 backdrop-blur-md border border-[#00E5FF]/20 rounded-2xl p-3 sm:p-4 flex flex-col gap-2 sm:gap-3 shadow-[0_10px_30px_rgba(0,229,255,0.1)]"
     >
       {/* User Message */}
-      <motion.div
-        initial={{ opacity: 0, x: 20, scale: 0.9 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
-        transition={{ delay: 0.2 }}
+      <div
         className="self-end bg-white/10 rounded-2xl rounded-tr-sm p-2 sm:p-3 max-w-[80%]"
       >
         <div className="w-16 sm:w-24 h-1.5 sm:h-2 bg-white/40 rounded mb-1.5 sm:mb-2"></div>
         <div className="w-10 sm:w-16 h-1.5 sm:h-2 bg-white/40 rounded"></div>
-      </motion.div>
+      </div>
       
       {/* Typing Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 1, 0] }}
-        transition={{ delay: 0.5, duration: isHovered ? 1 : 1.5, times: [0, 0.2, 1], repeat: Infinity, repeatDelay: 2 }}
-        className="self-start bg-[#00E5FF]/10 border border-[#00E5FF]/20 rounded-2xl rounded-tl-sm p-2 sm:p-3 flex gap-1"
-      >
-        <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0 }} className="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-[#00E5FF] rounded-full" />
-        <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }} className="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-[#00E5FF] rounded-full" />
-        <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }} className="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-[#00E5FF] rounded-full" />
-      </motion.div>
+      {shouldAnimate ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ delay: 0.5, duration: isHovered ? 1 : 1.5, times: [0, 0.2, 1], repeat: Infinity, repeatDelay: 2 }}
+          className="self-start bg-[#00E5FF]/10 border border-[#00E5FF]/20 rounded-2xl rounded-tl-sm p-2 sm:p-3 flex gap-1"
+        >
+          <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0 }} className="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-[#00E5FF] rounded-full" />
+          <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }} className="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-[#00E5FF] rounded-full" />
+          <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }} className="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-[#00E5FF] rounded-full" />
+        </motion.div>
+      ) : (
+        <div className="self-start bg-[#00E5FF]/10 border border-[#00E5FF]/20 rounded-2xl rounded-tl-sm p-2 sm:p-3 flex gap-1">
+          <div className="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-[#00E5FF]/80 rounded-full animate-none" />
+          <div className="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-[#00E5FF]/80 rounded-full animate-none" />
+          <div className="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-[#00E5FF]/80 rounded-full animate-none" />
+        </div>
+      )}
       
       {/* AI Response */}
-      <motion.div
-        initial={{ opacity: 0, x: -20, scale: 0.9 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
-        transition={{ delay: 1.5 }}
+      <div
         className="self-start bg-gradient-to-r from-[#00E5FF]/20 to-[#007BFF]/20 border border-[#00E5FF]/30 rounded-2xl rounded-tl-sm p-2 sm:p-3 max-w-[80%] shadow-[0_0_15px_rgba(0,229,255,0.2)]"
       >
         <div className="w-20 sm:w-32 h-1.5 sm:h-2 bg-[#00E5FF]/80 rounded mb-1.5 sm:mb-2"></div>
         <div className="w-24 sm:w-40 h-1.5 sm:h-2 bg-[#00E5FF]/80 rounded mb-1.5 sm:mb-2"></div>
         <div className="w-12 sm:w-20 h-1.5 sm:h-2 bg-[#00E5FF]/80 rounded"></div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   </div>
 )
 
-const EmailAutomationAnimation = ({ isHovered = false }: { isHovered?: boolean }) => (
+const EmailAutomationAnimation = ({ isHovered = false, shouldAnimate = true }: { isHovered?: boolean, shouldAnimate?: boolean }) => (
   <div className="relative w-full h-full flex items-center justify-center">
     {/* Pipeline */}
     <div className="absolute w-3/4 h-1 bg-white/10 rounded-full overflow-hidden">
-      <motion.div
-        animate={{ x: ["-100%", "100%"] }}
-        transition={{ duration: isHovered ? 1 : 2, repeat: Infinity, ease: "linear" }}
-        className="w-1/2 h-full bg-gradient-to-r from-transparent via-[#00E5FF] to-transparent"
-      />
+      {shouldAnimate && (
+        <motion.div
+          animate={{ x: ["-100%", "100%"] }}
+          transition={{ duration: isHovered ? 1 : 2, repeat: Infinity, ease: "linear" }}
+          className="w-1/2 h-full bg-gradient-to-r from-transparent via-[#00E5FF] to-transparent"
+        />
+      )}
     </div>
     
     {/* Nodes */}
     <div className="absolute w-3/4 flex justify-between items-center">
       {[0, 1, 2].map((i) => (
         <div key={i} className="relative">
-          <motion.div
-            animate={{ scale: [1, 1.2, 1], boxShadow: ["0 0 0px #00E5FF", "0 0 20px #00E5FF", "0 0 0px #00E5FF"] }}
-            transition={{ duration: isHovered ? 1 : 2, repeat: Infinity, delay: i * (isHovered ? 0.3 : 0.6) }}
-            className="w-4 h-4 sm:w-6 sm:h-6 bg-[#0a121e] border-2 border-[#00E5FF] rounded-full z-10 relative"
-          />
+          {shouldAnimate ? (
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], boxShadow: ["0 0 0px #00E5FF", "0 0 20px #00E5FF", "0 0 0px #00E5FF"] }}
+              transition={{ duration: isHovered ? 1 : 2, repeat: Infinity, delay: i * (isHovered ? 0.3 : 0.6) }}
+              className="w-4 h-4 sm:w-6 sm:h-6 bg-[#0a121e] border-2 border-[#00E5FF] rounded-full z-10 relative"
+            />
+          ) : (
+            <div className="w-4 h-4 sm:w-6 sm:h-6 bg-[#0a121e] border-2 border-[#00E5FF] rounded-full z-10 relative shadow-[0_0_10px_#00E5FF]" />
+          )}
         </div>
       ))}
     </div>
     
     {/* Envelopes */}
-    {[0, 1].map((i) => (
-      <motion.div
-        key={i}
-        initial={{ left: "12.5%", opacity: 0 }}
-        animate={{ left: "87.5%", opacity: [0, 1, 1, 0] }}
-        transition={{ duration: isHovered ? 1.5 : 3, repeat: Infinity, delay: i * (isHovered ? 0.75 : 1.5), ease: "linear" }}
-        className="absolute top-1/2 -translate-y-1/2 -mt-4 sm:-mt-6 w-6 h-4 sm:w-8 sm:h-6 bg-gradient-to-br from-[#00E5FF] to-[#007BFF] rounded shadow-[0_0_15px_#00E5FF] flex items-center justify-center"
-      >
+    {shouldAnimate ? (
+      [0, 1].map((i) => (
+        <motion.div
+          key={i}
+          initial={{ left: "12.5%", opacity: 0 }}
+          animate={{ left: "87.5%", opacity: [0, 1, 1, 0] }}
+          transition={{ duration: isHovered ? 1.5 : 3, repeat: Infinity, delay: i * (isHovered ? 0.75 : 1.5), ease: "linear" }}
+          className="absolute top-1/2 -translate-y-1/2 -mt-4 sm:-mt-6 w-6 h-4 sm:w-8 sm:h-6 bg-gradient-to-br from-[#00E5FF] to-[#007BFF] rounded shadow-[0_0_15px_#00E5FF] flex items-center justify-center"
+        >
+          <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+        </motion.div>
+      ))
+    ) : (
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -mt-4 sm:-mt-6 w-6 h-4 sm:w-8 sm:h-6 bg-gradient-to-br from-[#00E5FF] to-[#007BFF] rounded shadow-[0_0_15px_#00E5FF] flex items-center justify-center">
         <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
-      </motion.div>
-    ))}
+      </div>
+    )}
   </div>
 )
 
-const WorkflowAutomationAnimation = ({ isHovered = false }: { isHovered?: boolean }) => (
+const WorkflowAutomationAnimation = ({ isHovered = false, shouldAnimate = true }: { isHovered?: boolean, shouldAnimate?: boolean }) => (
   <div className="relative w-full h-full flex items-center justify-center">
-    <motion.div animate={{ rotate: 360 }} transition={{ duration: isHovered ? 10 : 20, repeat: Infinity, ease: "linear" }} className="relative w-32 h-32 sm:w-48 sm:h-48">
+    <motion.div animate={shouldAnimate ? { rotate: 360 } : {}} transition={{ duration: isHovered ? 10 : 20, repeat: Infinity, ease: "linear" }} className="relative w-32 h-32 sm:w-48 sm:h-48">
       {/* Center */}
       <div className="absolute inset-0 m-auto w-12 h-12 sm:w-16 sm:h-16 bg-[#00E5FF]/20 border border-[#00E5FF]/50 rounded-xl flex items-center justify-center backdrop-blur-md shadow-[0_0_30px_rgba(0,229,255,0.3)] z-20">
         <Workflow className="w-6 h-6 sm:w-8 sm:h-8 text-[#00E5FF]" />
@@ -145,19 +160,23 @@ const WorkflowAutomationAnimation = ({ isHovered = false }: { isHovered?: boolea
       {[0, 1, 2, 3].map((i) => (
         <div key={i} className="absolute inset-0" style={{ transform: `rotate(${i * 90}deg)` }}>
           <motion.div
-            animate={{ rotate: -360 }}
+            animate={shouldAnimate ? { rotate: -360 } : {}}
             transition={{ duration: isHovered ? 10 : 20, repeat: Infinity, ease: "linear" }}
             className="absolute top-0 left-1/2 -ml-4 sm:-ml-5 w-8 h-8 sm:w-10 sm:h-10 bg-[#0a121e] border border-[#007BFF]/50 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(0,123,255,0.2)]"
           >
-            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-[#00E5FF] rounded-full animate-pulse" />
+            <div className={`w-2 h-2 sm:w-3 sm:h-3 bg-[#00E5FF] rounded-full ${shouldAnimate ? 'animate-pulse' : ''}`} />
           </motion.div>
           {/* Connecting Line */}
           <div className="absolute top-8 sm:top-10 left-1/2 w-px h-10 sm:h-14 bg-gradient-to-b from-[#007BFF]/50 to-[#00E5FF]/50 -ml-[0.5px]">
-            <motion.div
-              animate={{ y: [0, 40] }}
-              transition={{ duration: isHovered ? 0.75 : 1.5, repeat: Infinity, delay: i * 0.3 }}
-              className="w-full h-3 sm:h-4 bg-[#00E5FF] shadow-[0_0_10px_#00E5FF]"
-            />
+            {shouldAnimate ? (
+              <motion.div
+                animate={{ y: [0, 40] }}
+                transition={{ duration: isHovered ? 0.75 : 1.5, repeat: Infinity, delay: i * 0.3 }}
+                className="w-full h-3 sm:h-4 bg-[#00E5FF] shadow-[0_0_10px_#00E5FF]"
+              />
+            ) : (
+              <div className="w-full h-3 sm:h-4 bg-[#00E5FF] shadow-[0_0_10px_#00E5FF]" style={{ transform: 'translateY(15px)' }} />
+            )}
           </div>
         </div>
       ))}
@@ -165,12 +184,9 @@ const WorkflowAutomationAnimation = ({ isHovered = false }: { isHovered?: boolea
   </div>
 )
 
-const WebsiteDevelopmentAnimation = ({ isHovered = false }: { isHovered?: boolean }) => (
+const WebsiteDevelopmentAnimation = ({ isHovered = false, shouldAnimate = true }: { isHovered?: boolean, shouldAnimate?: boolean }) => (
   <div className="relative w-full h-full flex items-center justify-center perspective-1000">
-    <motion.div
-      initial={{ rotateX: 20, y: 20, opacity: 0 }}
-      animate={{ rotateX: 0, y: 0, opacity: 1 }}
-      transition={{ duration: 1, type: "spring" }}
+    <div
       className="w-48 h-32 sm:w-64 sm:h-40 bg-[#0a121e]/80 backdrop-blur-md border border-[#00E5FF]/30 rounded-lg overflow-hidden shadow-[0_20px_50px_rgba(0,229,255,0.15)] flex flex-col"
     >
       {/* Browser Header */}
@@ -183,53 +199,46 @@ const WebsiteDevelopmentAnimation = ({ isHovered = false }: { isHovered?: boolea
       {/* Content */}
       <div className="flex-1 p-2 sm:p-3 flex flex-col gap-2 sm:gap-3">
         {/* Hero */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="w-full h-8 sm:h-12 bg-gradient-to-r from-[#00E5FF]/20 to-[#007BFF]/20 rounded origin-left border border-[#00E5FF]/20"
+        <div
+          className="w-full h-8 sm:h-12 bg-gradient-to-r from-[#00E5FF]/20 to-[#007BFF]/20 rounded border border-[#00E5FF]/20"
         />
         
         {/* Grid */}
         <div className="flex gap-2 sm:gap-3 flex-1">
-          <motion.div
-            initial={{ scaleY: 0 }}
-            animate={{ scaleY: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-            className="w-1/3 h-full bg-white/5 rounded origin-top"
+          <div
+            className="w-1/3 h-full bg-white/5 rounded"
           />
           <div className="w-2/3 flex flex-col gap-1.5 sm:gap-2">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="w-full h-2 sm:h-3 bg-white/10 rounded" />
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }} className="w-3/4 h-2 sm:h-3 bg-white/10 rounded" />
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1, boxShadow: isHovered ? "0 0 15px rgba(0,229,255,0.6)" : "0 0 10px rgba(0,229,255,0.3)" }} 
-              transition={{ delay: 1 }} 
-              className="w-1/2 h-2 sm:h-3 bg-[#00E5FF]/40 rounded" 
+            <div className="w-full h-2 sm:h-3 bg-white/10 rounded" />
+            <div className="w-3/4 h-2 sm:h-3 bg-white/10 rounded" />
+            <div 
+              className="w-1/2 h-2 sm:h-3 bg-[#00E5FF]/40 rounded shadow-[0_0_10px_rgba(0,229,255,0.3)]" 
             />
           </div>
         </div>
       </div>
       
       {/* Cursor */}
-      <motion.div
-        initial={{ x: 100, y: 100, opacity: 0 }}
-        animate={{ x: 30, y: 15, opacity: 1 }}
-        transition={{ delay: 1.2, duration: isHovered ? 0.5 : 1 }}
-        className="absolute w-3 h-3 sm:w-4 sm:h-4 z-20"
-      >
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 3L10.07 19.97L12.58 12.58L19.97 10.07L3 3Z" fill="white" stroke="black" strokeWidth="2" strokeLinejoin="round"/>
-        </svg>
-      </motion.div>
-    </motion.div>
+      {shouldAnimate && (
+        <motion.div
+          initial={{ x: 100, y: 100, opacity: 0 }}
+          animate={{ x: 30, y: 15, opacity: 1 }}
+          transition={{ delay: 1.2, duration: isHovered ? 0.5 : 1 }}
+          className="absolute w-3 h-3 sm:w-4 sm:h-4 z-20"
+        >
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 3L10.07 19.97L12.58 12.58L19.97 10.07L3 3Z" fill="white" stroke="black" strokeWidth="2" strokeLinejoin="round"/>
+          </svg>
+        </motion.div>
+      )}
+    </div>
   </div>
 )
 
-const AppDevelopmentAnimation = ({ isHovered = false }: { isHovered?: boolean }) => (
+const AppDevelopmentAnimation = ({ isHovered = false, shouldAnimate = true }: { isHovered?: boolean, shouldAnimate?: boolean }) => (
   <div className="relative w-full h-full flex items-center justify-center perspective-1000">
     <motion.div
-      animate={{ y: [-5, 5, -5], rotateY: [-5, 5, -5], rotateX: [5, -5, 5] }}
+      animate={shouldAnimate ? { y: [-5, 5, -5], rotateY: [-5, 5, -5], rotateX: [5, -5, 5] } : {}}
       transition={{ duration: isHovered ? 3 : 6, repeat: Infinity, ease: "easeInOut" }}
       className="relative w-24 h-44 sm:w-32 sm:h-56 bg-black border-[3px] sm:border-[4px] border-white/20 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_20px_50px_rgba(0,229,255,0.2)] overflow-hidden flex flex-col"
     >
@@ -239,26 +248,22 @@ const AppDevelopmentAnimation = ({ isHovered = false }: { isHovered?: boolean })
       {/* Screen */}
       <div className="flex-1 bg-gradient-to-b from-[#0a121e] to-black p-2 sm:p-3 pt-6 sm:pt-8 flex flex-col gap-2 sm:gap-3 relative">
         {/* Light Sweep */}
-        <motion.div
-          animate={{ y: ["-100%", "200%"] }}
-          transition={{ duration: isHovered ? 1.5 : 3, repeat: Infinity, ease: "linear", delay: 1 }}
-          className="absolute inset-0 w-full h-1/2 bg-gradient-to-b from-transparent via-white/10 to-transparent -skew-y-12 z-10 pointer-events-none"
-        />
+        {shouldAnimate && (
+          <motion.div
+            animate={{ y: ["-100%", "200%"] }}
+            transition={{ duration: isHovered ? 1.5 : 3, repeat: Infinity, ease: "linear", delay: 1 }}
+            className="absolute inset-0 w-full h-1/2 bg-gradient-to-b from-transparent via-white/10 to-transparent -skew-y-12 z-10 pointer-events-none"
+          />
+        )}
         
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
+        <div
           className="w-full aspect-square bg-gradient-to-br from-[#00E5FF] to-[#007BFF] rounded-lg sm:rounded-xl shadow-[0_0_20px_rgba(0,229,255,0.4)]"
         />
         
         <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
           {[0, 1, 2, 3].map((i) => (
-            <motion.div
+            <div
               key={i}
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4 + i * 0.1 }}
               className="w-full aspect-square bg-white/10 rounded-md sm:rounded-lg"
             />
           ))}
@@ -367,6 +372,8 @@ const panelVariants = {
 export function ServicesSection() {
   const [selectedService, setSelectedService] = useState<typeof services[0] | null>(null)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const { isMobile, isLowEnd, prefersReducedMotion } = usePerformanceConfig()
+  const shouldAnimate = !isMobile && !isLowEnd && !prefersReducedMotion
 
   useEffect(() => {
     if (selectedService) {
@@ -459,7 +466,7 @@ export function ServicesSection() {
               {/* Animation Area */}
               <div className="w-full h-40 sm:h-48 md:h-56 mb-6 sm:mb-8 rounded-2xl bg-black/40 border border-white/5 relative overflow-hidden flex items-center justify-center group-hover:border-[#00E5FF]/30 transition-colors duration-500 shadow-inner">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,229,255,0.05),transparent_70%)] group-hover:bg-[radial-gradient(ellipse_at_center,rgba(0,229,255,0.1),transparent_70%)] transition-colors duration-500"></div>
-                <service.Animation isHovered={hoveredIndex === index} />
+                <service.Animation isHovered={hoveredIndex === index} shouldAnimate={shouldAnimate} />
               </div>
 
               {/* Content */}

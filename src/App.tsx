@@ -2,7 +2,9 @@ import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Menu, X, ArrowRight, Bot, Zap, Workflow } from 'lucide-react'
 import { HeroSection } from './components/HeroSection'
+import { usePerformanceConfig } from './lib/performance'
 import { NeonButton } from './components/ui/NeonButton'
+
 
 // PERF: Lazy load GPU-intensive cursor effects — defer until after page is interactive
 const SplashCursor = lazy(() => import('./components/ui/SplashCursor'))
@@ -297,6 +299,8 @@ function Navbar() {
 }
 
 function App() {
+  const { isMobile, isLowEnd, prefersReducedMotion } = usePerformanceConfig();
+
   // Global smooth scrolling handler for lazy-loaded sections
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
@@ -444,27 +448,30 @@ function App() {
         </div>
       </footer>
     </motion.div>
-    {/* PERF: Lazy load GPU-intensive effects after page is interactive */}
-    <InteractiveOnly>
-      <Suspense fallback={null}>
-        <SplashCursor
-          SIM_RESOLUTION={128}
-          DYE_RESOLUTION={1024}
-          DENSITY_DISSIPATION={3.5}
-          VELOCITY_DISSIPATION={2}
-          PRESSURE={0.1}
-          CURL={3}
-          SPLAT_RADIUS={0.2}
-          SPLAT_FORCE={6000}
-          COLOR_UPDATE_SPEED={10}
-        />
-      </Suspense>
-      <Suspense fallback={null}>
-        <GlowTrail />
-      </Suspense>
-    </InteractiveOnly>
+    {/* PERF: Lazy load GPU-intensive effects after page is interactive — desktop only */}
+    {!isMobile && !isLowEnd && !prefersReducedMotion && (
+      <InteractiveOnly>
+        <Suspense fallback={null}>
+          <SplashCursor
+            SIM_RESOLUTION={128}
+            DYE_RESOLUTION={1024}
+            DENSITY_DISSIPATION={3.5}
+            VELOCITY_DISSIPATION={2}
+            PRESSURE={0.1}
+            CURL={3}
+            SPLAT_RADIUS={0.2}
+            SPLAT_FORCE={6000}
+            COLOR_UPDATE_SPEED={10}
+          />
+        </Suspense>
+        <Suspense fallback={null}>
+          <GlowTrail />
+        </Suspense>
+      </InteractiveOnly>
+    )}
     </>
   )
 }
+
 
 export default App

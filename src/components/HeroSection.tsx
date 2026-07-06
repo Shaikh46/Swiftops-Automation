@@ -4,10 +4,12 @@ import { Spotlight } from "@/components/ui/spotlight";
 import { motion } from "framer-motion";
 import { ArrowRight, Zap, PlayCircle } from "lucide-react";
 import { NeonButton } from "./ui/NeonButton";
+import { usePerformanceConfig } from "@/lib/performance";
 
 export function HeroSection() {
-
+  const { isMobile, isLowEnd, prefersReducedMotion } = usePerformanceConfig();
   const headline = "Automate The Impossible".split(" ");
+
 
   return (
     <section id="home" className="relative w-full min-h-screen bg-[#0a1628] overflow-hidden bg-ken-burns">
@@ -125,9 +127,11 @@ export function HeroSection() {
           {/* RIGHT: 3D Visual */}
           <div className="hidden md:flex flex-1 w-full order-2 justify-center items-center h-[400px] md:h-[500px] lg:h-[800px] relative pointer-events-auto">
             <div className="w-full h-full relative origin-center">
-              <Suspense fallback={null}>
-                <Abstract3D />
-              </Suspense>
+              {!isMobile && !isLowEnd && !prefersReducedMotion && (
+                <Suspense fallback={null}>
+                  <Abstract3D />
+                </Suspense>
+              )}
             </div>
             {/* Atmospheric Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] lg:w-[600px] h-[300px] lg:h-[600px] bg-[#00fff7]/10 rounded-full blur-[80px] lg:blur-[120px] pointer-events-none -z-10"></div>

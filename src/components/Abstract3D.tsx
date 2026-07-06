@@ -117,8 +117,27 @@ export default function Abstract3D() {
       // 6. Animation Loop
       let clock = new THREE.Clock();
       let animationId: number;
+      let lastFrameTime = 0;
 
-      const tick = () => {
+      const isMobileDevice = typeof window !== 'undefined' && (
+        window.innerWidth < 768 ||
+        (navigator as any).deviceMemory <= 4 ||
+        (navigator as any).hardwareConcurrency <= 4
+      );
+
+      const frameInterval = isMobileDevice ? 1000 / 30 : 1000 / 60;
+
+      const tick = (timestamp?: number) => {
+        animationId = requestAnimationFrame(tick);
+
+        if (timestamp) {
+          const elapsed = timestamp - lastFrameTime;
+          if (elapsed < frameInterval) {
+            return;
+          }
+          lastFrameTime = timestamp - (elapsed % frameInterval);
+        }
+
         const time = clock.getElapsedTime();
 
         mouse.x += (mouse.targetX - mouse.x) * 0.05;
@@ -153,7 +172,6 @@ export default function Abstract3D() {
         positionAttr.needsUpdate = true;
 
         renderer.render(scene, camera);
-        animationId = requestAnimationFrame(tick);
       };
 
       if (prefersReducedMotion) {
@@ -171,7 +189,7 @@ export default function Abstract3D() {
         positionAttr.needsUpdate = true;
         renderer.render(scene, camera);
       } else {
-        tick();
+        animationId = requestAnimationFrame(tick);
       }
 
       // 7. Resize handler

@@ -2,6 +2,8 @@ import { motion } from 'framer-motion'
 import { CheckCircle2, ArrowRight } from 'lucide-react'
 import { NeonButton } from './ui/NeonButton'
 import { useEffect, useState } from 'react'
+import { usePerformanceConfig } from '@/lib/performance'
+
 
 const features = [
   'AI-Powered Automation',
@@ -13,7 +15,7 @@ const features = [
 // Floating AI Core Animation Component — optimized particle counts
 const FloatingAICore = () => {
   const [mounted, setMounted] = useState(false);
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const { isMobile, isLowEnd, prefersReducedMotion } = usePerformanceConfig();
   
   useEffect(() => {
     setMounted(true);
@@ -21,8 +23,25 @@ const FloatingAICore = () => {
 
   if (!mounted) return null;
 
-  // Reduced particles on mobile for performance
-  const particleCount = isMobile ? 4 : 8;
+  if (prefersReducedMotion) {
+    return (
+      <div className="relative w-full h-full flex items-center justify-center">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.05)_0%,transparent_60%)]"></div>
+        <div className="relative w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] flex items-center justify-center">
+          <div className="absolute bottom-8 sm:bottom-10 w-40 sm:w-48 h-10 sm:h-12 rounded-[100%] border border-[#00E5FF]/20 bg-[#00E5FF]/5" style={{ transform: 'rotateX(70deg)' }}></div>
+          <div className="relative flex items-center justify-center">
+            <div className="absolute rounded-full border border-[#00E5FF]/20" style={{ width: 180, height: 180, transform: 'rotateX(45deg) rotateY(-30deg)' }}></div>
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center border-2 border-[#00E5FF]/40 bg-[#00E5FF]/10">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full blur-[4px]"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Reduced particles on mobile/low-end for performance
+  const particleCount = isLowEnd || isMobile ? 3 : 8;
   const particles = Array.from({ length: particleCount }).map((_, i) => ({
     id: i,
     size: Math.random() * 3 + 1,
@@ -32,11 +51,11 @@ const FloatingAICore = () => {
     delay: Math.random() * 2
   }));
 
-  // Reduced rings on mobile
-  const rings = isMobile 
+  // Reduced rings on mobile/low-end
+  const rings = isLowEnd || isMobile 
     ? [
-        { size: 200, duration: 20, rotateX: 65, rotateY: 20, delay: 0 },
-        { size: 140, duration: 12, rotateX: 75, rotateY: 60, delay: 1 }
+        { size: 200, duration: 25, rotateX: 65, rotateY: 20, delay: 0 },
+        { size: 140, duration: 15, rotateX: 75, rotateY: 60, delay: 1 }
       ]
     : [
         { size: 220, duration: 20, rotateX: 65, rotateY: 20, delay: 0 },
