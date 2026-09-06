@@ -1,0 +1,28 @@
+flowchart LR
+    U[User] -->|Scan QR and confirm phrase| P[Android App]
+    U -->|Fingerprint| BP[Android BiometricPrompt]
+    BP -->|Success authorizes one key operation| KS[Android Keystore\nEC P-256 private key]
+
+    PC[Windows PC Agent] -->|mDNS discovery / local BLE| P
+    PC -->|Pairing QR: pc_id, public key, expiry| QR[QR Pairing Payload]
+    QR --> P
+    P -->|Phone public key + signed pairing confirmation| PC
+
+    PC -->|Fresh nonce + account binding + expiry| C[Local authenticated channel\nTLS over Wi-Fi; BLE optional]
+    C --> P
+    P -->|Biometric approval| BP
+    KS -->|ECDSA signature over canonical challenge| P
+    P -->|Signed unlock response| C
+    C --> PC
+
+    PC --> V[Verify signature, nonce, expiry,\naccount binding, single-use challenge]
+    V -->|Valid only| A[Supported Windows auth adapter]
+    A --> WH[Windows Hello / approved\ncompanion integration]
+    V -->|Invalid| F[Fail closed; retain normal sign-in]
+
+    classDef trust fill:#e8f1ff,stroke:#2457a6,color:#111;
+    classDef sensitive fill:#fff2cc,stroke:#9a6700,color:#111;
+    classDef decision fill:#e8f7ee,stroke:#26734d,color:#111;
+    class P,KS,PC,C trust;
+    class BP,QR sensitive;
+    class V,A,WH,F decision;
